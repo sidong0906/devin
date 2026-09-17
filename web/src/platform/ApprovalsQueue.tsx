@@ -2,9 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 import type { Actor, ApprovalRequestDto } from "@tools/contracts";
 import { api } from "../api/client";
 import { formatDate } from "../format";
-import { DecisionBadge, ExecutionBadge } from "../components/Badges";
-import { ErrorBox } from "../components/ErrorBox";
+import { DecisionBadge, ExecutionBadge } from "./Badges";
+import { ErrorBox } from "./ErrorBox";
 import { requestHref } from "../hrefs";
+import { Button, ButtonGroup, EmptyState, Loading, SectionHead, Table } from "@tools/ui";
 
 type Filter = "pending" | "decided" | "all";
 type Props = { actor: Actor; onNavigate: (hash: string) => void };
@@ -35,22 +36,21 @@ export function ApprovalsQueue({ actor, onNavigate }: Props) {
 
   return (
     <section>
-      <div className="section-head">
-        <h2>Approvals queue</h2>
-        <div className="filters" role="group" aria-label="Filter">
+      <SectionHead heading="Approvals queue">
+        <ButtonGroup aria-label="Filter">
           {(["pending", "decided", "all"] as Filter[]).map((f) => (
-            <button key={f} className={`btn btn-secondary ${filter === f ? "active" : ""}`} aria-pressed={filter === f} onClick={() => setFilter(f)}>
+            <Button key={f} variant="secondary" active={filter === f} onClick={() => setFilter(f)}>
               {f}
-            </button>
+            </Button>
           ))}
-          <button className="btn btn-secondary" onClick={() => void load()}>Refresh</button>
-        </div>
-      </div>
+          <Button variant="secondary" onClick={() => void load()}>Refresh</Button>
+        </ButtonGroup>
+      </SectionHead>
       {error ? <ErrorBox error={error} prefix="Could not load approvals:" /> : null}
-      {requests === null && !error ? <p className="muted">Loading approvals…</p> : null}
-      {requests && visible.length === 0 ? <p className="empty">No {filter === "all" ? "" : filter + " "}requests.</p> : null}
+      {requests === null && !error ? <Loading>Loading approvals…</Loading> : null}
+      {requests && visible.length === 0 ? <EmptyState>No {filter === "all" ? "" : filter + " "}requests.</EmptyState> : null}
       {visible.length > 0 ? (
-        <table className="table clickable">
+        <Table clickable>
           <thead>
             <tr>
               <th>Request</th>
@@ -75,7 +75,7 @@ export function ApprovalsQueue({ actor, onNavigate }: Props) {
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
       ) : null}
     </section>
   );

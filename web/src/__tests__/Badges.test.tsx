@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render } from "@testing-library/react";
 import { ExecutionState } from "@tools/contracts";
-import { ExecutionBadge } from "../components/Badges";
+import { ExecutionBadge } from "../platform/Badges";
 
 afterEach(cleanup);
 

@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import type { Actor, AuditEventDto } from "@tools/contracts";
 import { api } from "../api/client";
 import { formatDate } from "../format";
-import { ErrorBox } from "../components/ErrorBox";
+import { ErrorBox } from "./ErrorBox";
+import { OutcomeBadge } from "./Badges";
+import { Card, EmptyState, Loading } from "@tools/ui";
 
 type Props = { actor: Actor; requestId: string; refreshKey: number };
 
@@ -29,7 +31,7 @@ export function AuditTimeline({ actor, requestId, refreshKey }: Props) {
   }, [canRead, requestId, refreshKey, actor.id]);
 
   return (
-    <section className="card">
+    <Card>
       <h3>Audit timeline</h3>
       {!canRead ? (
         <p className="muted">
@@ -37,15 +39,15 @@ export function AuditTimeline({ actor, requestId, refreshKey }: Props) {
         </p>
       ) : null}
       {canRead && error ? <ErrorBox error={error} prefix="Could not load audit events:" /> : null}
-      {canRead && !error && events === null ? <p className="muted">Loading audit events…</p> : null}
-      {canRead && events && events.length === 0 ? <p className="empty">No audit events recorded for this request.</p> : null}
+      {canRead && !error && events === null ? <Loading>Loading audit events…</Loading> : null}
+      {canRead && events && events.length === 0 ? <EmptyState>No audit events recorded for this request.</EmptyState> : null}
       {canRead && events && events.length > 0 ? (
         <ol className="timeline">
           {events.map((e) => (
             <li key={e.id} className={`timeline-item outcome-${e.outcome}`}>
               <div className="timeline-meta">
                 <span className="mono">{formatDate(e.at)}</span>
-                <span className={`badge badge-${e.outcome === "ok" ? "ok" : e.outcome === "denied" ? "danger" : "warn"}`}>{e.outcome}</span>
+                <OutcomeBadge outcome={e.outcome} />
               </div>
               <div>
                 <code>{e.action}</code> by <strong>{e.actorId}</strong>
@@ -55,6 +57,6 @@ export function AuditTimeline({ actor, requestId, refreshKey }: Props) {
           ))}
         </ol>
       ) : null}
-    </section>
+    </Card>
   );
 }

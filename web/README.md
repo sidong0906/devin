@@ -8,8 +8,9 @@ match the frozen contract is surfaced as an error, never rendered.
 
 ```text
 src/
-  platform/     shell screens shared by all tools: IdentityBar, ApprovalsQueue, RequestDetail, AuditTimeline
-  components/   reusable primitives (Badges, ErrorBox); the seed of the design system
+  platform/     shell screens shared by all tools (IdentityBar, ApprovalsQueue, RequestDetail, AuditTimeline)
+                plus the domain components that bind contract states to the design system
+                (Badges.tsx: ExecutionBadge/DecisionBadge/OutcomeBadge/PermissionChip; ErrorBox.tsx)
   apps/
     index.ts    web-side app manifest (WEB_APPS); mirrors packages/app-manifest on the server
     types.ts    WebApp: tab, main View, PayloadFields for the request detail, reviewPermission
@@ -17,7 +18,12 @@ src/
     flags/      FlagsView + FlagChangePayloadFields
   api/          typed client (client.ts) and the in-memory fixture API (fixtures.ts)
   routes.ts     hash router; app tabs come from WEB_APPS, approvals routes are fixed
+  styles.css    imports @tools/ui/styles.css, then only shell-specific rules (identity bar, timeline)
 ```
+
+Visual building blocks (tokens, Button, Badge, Alert, Card, Table, Tabs, ...) come from
+[`packages/ui`](../packages/ui/README.md). Screens compose those primitives and should contain
+almost no `className`; a screen that needs a new visual asks the design system for it.
 
 A new tool adds a folder under `src/apps/<name>/` exporting a `WebApp` and one line in `src/apps/index.ts`.
 Nothing under `platform/` needs to change: the queue renders any `RequestKind`, and the detail page

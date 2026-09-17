@@ -1,6 +1,8 @@
 import type { DecisionState, ExecutionState } from "@tools/contracts";
+import { Badge, Chip, type Tone } from "@tools/ui";
 
-const EXECUTION_LABELS: Record<ExecutionState, { label: string; tone: string; title: string }> = {
+/** The single place that decides which tone each contract state gets. See packages/ui/README.md "Tone". */
+const EXECUTION_LABELS: Record<ExecutionState, { label: string; tone: Tone; title: string }> = {
   NONE: { label: "Not executed", tone: "neutral", title: "No execution job exists for this request" },
   QUEUED: { label: "Queued", tone: "pending", title: "Execution job created, waiting for a worker" },
   LEASED: { label: "Running", tone: "pending", title: "A worker holds the lease and is calling the payment provider" },
@@ -12,22 +14,28 @@ const EXECUTION_LABELS: Record<ExecutionState, { label: string; tone: string; ti
 export function ExecutionBadge({ state }: { state: ExecutionState }) {
   const meta = EXECUTION_LABELS[state];
   return (
-    <span className={`badge badge-${meta.tone}`} title={meta.title} data-state={state}>
+    <Badge tone={meta.tone} title={meta.title} data-state={state}>
       {meta.label}
-    </span>
+    </Badge>
   );
 }
 
-const DECISION_TONE: Record<DecisionState, string> = { PENDING: "pending", APPROVED: "ok", REJECTED: "danger" };
+const DECISION_TONE: Record<DecisionState, Tone> = { PENDING: "pending", APPROVED: "ok", REJECTED: "danger" };
 
 export function DecisionBadge({ state }: { state: DecisionState }) {
   return (
-    <span className={`badge badge-${DECISION_TONE[state]}`} data-state={state}>
+    <Badge tone={DECISION_TONE[state]} data-state={state}>
       {state.charAt(0) + state.slice(1).toLowerCase()}
-    </span>
+    </Badge>
   );
 }
 
+const OUTCOME_TONE: Record<"ok" | "denied" | "failed", Tone> = { ok: "ok", denied: "danger", failed: "warn" };
+
+export function OutcomeBadge({ outcome }: { outcome: keyof typeof OUTCOME_TONE }) {
+  return <Badge tone={OUTCOME_TONE[outcome]} data-outcome={outcome}>{outcome}</Badge>;
+}
+
 export function PermissionChip({ permission }: { permission: string }) {
-  return <span className="chip">{permission}</span>;
+  return <Chip>{permission}</Chip>;
 }
