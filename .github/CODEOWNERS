@@ -1,0 +1,13 @@
+# Humans own the shared controls. Devin builds inside app folders; changes here require a human review.
+/.github/                     @sidong0906
+/packages/contracts/          @sidong0906
+/packages/server-core/        @sidong0906
+/services/api/                @sidong0906
+/services/worker/             @sidong0906
+/db/                          @sidong0906
+/tests/contracts/             @sidong0906
+/pnpm-lock.yaml               @sidong0906
+/pnpm-workspace.yaml          @sidong0906
+# Domain code is reviewed too; bad refund rules are dangerous even when the platform is untouched.
+/apps/refunds/                @sidong0906
+/apps/flags/                  @sidong0906

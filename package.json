@@ -1,0 +1,28 @@
+{
+  "name": "governed-internal-tools",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.34.5",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "db:up": "docker compose up -d db",
+    "db:down": "docker compose down -v",
+    "db:migrate": "pnpm --filter @tools/api run migrate",
+    "db:seed": "pnpm --filter @tools/api run seed",
+    "dev": "pnpm -r --parallel --filter './services/*' --filter './web' run dev",
+    "build": "pnpm -r run build",
+    "lint": "eslint .",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "pnpm -r run test",
+    "test:acceptance": "RUN_ACCEPTANCE=1 pnpm --filter @tools/acceptance run test",
+    "check": "pnpm lint && pnpm typecheck && pnpm test"
+  },
+  "devDependencies": {
+    "@eslint/js": "catalog:",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "typescript-eslint": "catalog:",
+    "vitest": "catalog:"
+  }
+}

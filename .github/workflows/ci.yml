@@ -1,0 +1,55 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: postgres:16-alpine
+        env: { POSTGRES_USER: postgres, POSTGRES_PASSWORD: postgres, POSTGRES_DB: tools }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres -d tools" --health-interval 2s --health-timeout 3s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - name: db roles
+        run: PGPASSWORD=postgres psql -h localhost -U postgres -d tools -f db/init/01-roles.sql
+      - name: migrate + seed
+        run: pnpm db:migrate && pnpm db:seed
+        env:
+          MIGRATION_DATABASE_URL: postgres://tools_migrator:tools_migrator@localhost:5432/tools
+          DATABASE_URL: postgres://tools_app:tools_app@localhost:5432/tools
+      - name: acceptance gates G1-G8
+        run: |
+          cp .env.example .env
+          pnpm --filter @tools/payment-simulator start & pnpm --filter @tools/api start & pnpm --filter @tools/worker start &
+          for i in $(seq 1 30); do curl -fs http://localhost:4000/api/health && break; sleep 1; done
+          pnpm test:acceptance
+        env:
+          NODE_ENV: test
+          DEMO_AUTH: "true"
+          SESSION_SECRET: ci-only
+          DATABASE_URL: postgres://tools_app:tools_app@localhost:5432/tools
+          MIGRATION_DATABASE_URL: postgres://tools_migrator:tools_migrator@localhost:5432/tools
+          PAYMENT_SIMULATOR_URL: http://localhost:4100
+  boundary:
+    # Guard: PRs authored by Devin app sessions must not touch shared controls without a human co-review.
+    # CODEOWNERS + branch protection enforce the review; this job only surfaces the touched paths.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: list shared-control changes
+        run: |
+          base="${{ github.event.pull_request.base.sha || 'HEAD~1' }}"
+          git diff --name-only "$base" HEAD | grep -E '^(packages/|services/|db/|tests/contracts/|\.github/|pnpm-)' || echo "no shared-control changes"

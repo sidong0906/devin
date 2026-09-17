@@ -1,0 +1,26 @@
+# Build ledger
+
+One row per session/stage. Unknown values stay unknown. Times are UTC.
+
+| stage | session | role | prompt/playbook | base SHA | head SHA | start | end | wall min | agent usage | human active min | interventions | failed checks | review findings | status | gaps |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| research + plan | parent | coordinator | conversation | — | — | 2026-09-17 04:25 | 2026-09-17 04:33 | ~8 (plus earlier review) | unknown | — | — | — | — | done | — |
+| scaffold + contracts | parent | coordinator | plan §7 | (empty repo) | b440fdb | 2026-09-17 04:33 | 2026-09-17 04:39 | 6 | unknown | 0 | 0 | 4 (react types version, vite config type, exactOptionalPropertyTypes on fetch body, tsconfig extends path) | — | done | contracts frozen; no runtime yet |
+| backend slice | [52f726f5](https://app.devin.ai/sessions/52f726f5f0cb4095b67f6857c4d71c06) | child | docs/prompts/01 | b440fdb | 81ffa98 | 04:40 | 04:49 | 9 (self-reported) | not visible to child; see session page | 0 (no mid-session messages) | 0 | 0 reported; Docker Hub 429 → child fell back to apt PostgreSQL 14, so `pnpm db:up` untested by child | none yet (no PR) | done: 16/16 G1–G8 self-reported | no DB-backed unit tests for `decideRequest`; denied SELF_APPROVAL / kind-permission decisions are not audit-logged (only missing-action-permission is) |
+| UI shell | [58c51219](https://app.devin.ai/sessions/58c51219b16f4019a3f54ae490e03abe) | child | docs/prompts/02 | b440fdb | e8d0908 | 04:40 | 04:48 | 8 (self-reported) | not visible to child | 0 | 0 | 0 | none yet | done: build/lint/typecheck/10 tests | never ran against live API; `POST /api/demo/session` response untyped in contract |
+| integrate refunds | parent | coordinator | — | 9ab99b9 | 9ec225c | 04:49 | 04:53 | ~4 | unknown | ~4 | 1 (pulled postgres:16-alpine via mirror.gcr.io — Docker Hub 429) | 0 — independent re-run: `pnpm test:acceptance` 16/16, `pnpm check` 29 unit tests, `pnpm build` ok, app-role UPDATE on audit_events / payload denied by PG | — | done: refunds E2E at ~0:20 elapsed (cut rule 1:20 not needed) | G10 browser demo not yet recorded |
+| flags contract + gate + playbook | parent | coordinator | docs/prompts/03 | 9ec225c | 159c34d | 04:53 | 04:58 | ~5 | unknown | ~5 | 0 | 0 | — | done | relaxed one assertion: denied decisions aren't audited by the platform (see backend gap) |
+| playbook run #1: flags app | [1aa75ba3](https://app.devin.ai/sessions/1aa75ba3cb0947edb86cba96cb240258) | child | docs/prompts/03 | 159c34d | 646c53c | 04:59 | 05:06 | 6 (self-reported) | not visible to child; see session page | 0 | 0 | 0 reported (Docker Hub 429 again → mirror fallback) | none yet (no PR) | done: 8/8 flags gates + 16/16 refunds gates self-reported | 0 files outside app/db/web/api-wiring paths. Platform finding: `server-core` `Database` type has no extension point, so the app used Kysely `withTables<>()` locally (no core edit). `FlagChangePayload` lacks a `from` value; UI derives it. Flags screen verified by component tests only, not in a browser. |
+| integrate flags | parent | coordinator | — | 4a3e2c1 | de7ca1e | 05:06 | 05:10 | ~4 | unknown | ~4 | 0 | 0 — independent re-run: `pnpm test:acceptance` 24/24 (16 refunds + 8 flags), `pnpm check` 33 unit tests, `pnpm build` ok | — | done: second app E2E at ~0:45 elapsed | one reuse data point (n = 1); flags has no PII and no row scope, so it exercises fewer controls than refunds. Governance finding: registering the app required edits to `services/api/src/app.ts`, `services/api/src/seed.ts`, and `pnpm-lock.yaml`, all CODEOWNERS-protected. The playbook prompt allowed this; branch protection would have required a human approval for it. Fix is a plugin manifest so new apps register without touching `services/api`. |
+
+## Totals
+
+- Devin clock (first child start to last child end): 04:40 → 05:06, **26 min** of session time across 3 sessions (9 + 8 + 6, self-reported; the two refunds sessions ran in parallel).
+- Coordinator wall clock, scaffold to green integration: 04:33 → 05:10, **37 min**.
+- Human active minutes (spec, contracts, gates, prompts, integration, review): **~45 min** before this ledger. Documentation after the build is not counted in the 2-hour box.
+- Agent usage (ACUs): **unknown** from inside the sessions. Read from each session page before quoting a dollar figure. `docs/ECONOMICS.md` shows why the conclusion does not depend on it.
+- Interventions (messages sent to a running child): **0**. Cut rules at 1:20 / 1:30 / 1:45 were never reached.
+- Failed checks: 4 during scaffold (coordinator), 0 reported by children, 0 on independent re-runs.
+- Files outside the app/UI ownership boundary changed by children: **0** for the refunds sessions; **3** for the flags session (`services/api/src/app.ts`, `services/api/src/seed.ts`, `pnpm-lock.yaml`), all wiring, all inside what the playbook prompt permitted, all CODEOWNERS-protected. Checked with `git diff --name-only` at each merge.
+- Review findings: no PR existed during the build, so Devin Review produced none. The coordinator's review found the denied-decision audit gap and the `Database` extension gap; both are recorded above and in `docs/CAPABILITY_MATRIX.md`.
+- Failure story: no session failed its gates. The two findings above are what review caught. No fabricated failure is reported.
