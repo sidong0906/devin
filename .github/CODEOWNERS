@@ -10,3 +10,4 @@
 /pnpm-workspace.yaml          @sidong0906
 # Domain code is reviewed too; bad refund rules are dangerous even when the platform is untouched.
 /apps/refunds/                @sidong0906
+/apps/flags/                  @sidong0906
