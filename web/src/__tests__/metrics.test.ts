@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { ApprovalRequestDto } from "@tools/contracts";
-import { countRequests, decisionSlices, executionSlices, medianDecisionMinutes, requestsPerDay } from "../platform/metrics";
+import { countRequests, decisionSlices, executionSlices, medianDecisionMinutes, requesterSlices, requestsPerDay } from "../platform/metrics";
 import { parseHash } from "../routes";
 
 function req(over: Partial<ApprovalRequestDto>): ApprovalRequestDto {
@@ -32,6 +32,12 @@ const sample = [
 describe("metrics", () => {
   it("counts decisions and execution states without double counting", () => {
     expect(countRequests(sample)).toEqual({ total: 5, pending: 1, approved: 3, rejected: 1, succeeded: 1, inFlight: 0, needsReview: 1 });
+  });
+
+  it("groups by requester, largest first, with distinct categorical colours", () => {
+    const slices = requesterSlices([...sample, req({ id: "f", requesterName: "Dana Dual" })]);
+    expect(slices.map((s) => [s.label, s.value])).toEqual([["Ana Agent", 5], ["Dana Dual", 1]]);
+    expect(new Set(slices.map((s) => s.color)).size).toBe(2);
   });
 
   it("keeps unresolved states on non-success tones", () => {

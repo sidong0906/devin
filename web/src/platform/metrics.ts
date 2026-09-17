@@ -1,5 +1,5 @@
 import type { ApprovalRequestDto, ExecutionState } from "@tools/contracts";
-import type { Slice, TrendPoint } from "@tools/ui";
+import { CHART_SERIES, type Slice, type TrendPoint } from "@tools/ui";
 import { DECISION_TONE, EXECUTION_LABELS } from "./Badges";
 
 /** Pure aggregations over the approvals list. Charts render these; the tables remain the record. */
@@ -50,6 +50,14 @@ export function countBy<K extends string>(requests: readonly ApprovalRequestDto[
   const m = new Map<K, number>();
   for (const r of requests) m.set(key(r), (m.get(key(r)) ?? 0) + 1);
   return m;
+}
+
+/** One slice per requester, largest first, each assigned the next categorical chart colour. */
+export function requesterSlices(requests: readonly ApprovalRequestDto[]): Slice[] {
+  const byName = countBy(requests, (r) => r.requesterName);
+  return [...byName.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(([label, value], i) => ({ label, value, color: CHART_SERIES[i % CHART_SERIES.length] ?? CHART_SERIES[0] }));
 }
 
 const dayKey = (iso: string) => iso.slice(0, 10);
