@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1580" height="1140" viewBox="0 0 1580 1140" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+<rect width="1580" height="1140" fill="#ffffff"/>
+<defs><marker id="m" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="context-stroke"/></marker></defs>
+<rect x="40" y="110" width="1180" height="190" rx="8" fill="#e9ecef" stroke="#495057" stroke-width="1"/>
+<text x="52" y="136.0" font-size="18" fill="#1e1e1e" text-anchor="start" font-weight="bold">Browser — web/ (React 19 + Vite)</text>
+<rect x="60" y="150" width="300" height="130" rx="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="1"/>
+<text x="210.0" y="194.20000000000002" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">packages/ui  (@tools/ui)</text>
+<text x="210.0" y="211.10000000000002" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">Radix Themes + Radix Icons + Recharts</text>
+<text x="210.0" y="228.00000000000003" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">5 semantic tones · KPI tiles · charts</text>
+<text x="210.0" y="244.90000000000003" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">only layer that imports the library</text>
+<rect x="380" y="150" width="380" height="130" rx="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="1"/>
+<text x="570.0" y="194.20000000000002" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">web/src/platform  (shared shell)</text>
+<text x="570.0" y="211.10000000000002" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">Identity bar · Overview (tool filter)</text>
+<text x="570.0" y="228.00000000000003" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">Approvals queue · Request detail</text>
+<text x="570.0" y="244.90000000000003" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">Audit timeline</text>
+<rect x="780" y="150" width="200" height="130" rx="8" fill="#99e9f2" stroke="#0c8599" stroke-width="1"/>
+<text x="880.0" y="202.65" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">web/src/apps/refunds</text>
+<text x="880.0" y="219.55" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">Payments · request refund</text>
+<text x="880.0" y="236.45000000000002" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">payload fields</text>
+<rect x="1000" y="150" width="200" height="130" rx="8" fill="#d0bfff" stroke="#6741d9" stroke-width="1"/>
+<text x="1100.0" y="202.65" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">web/src/apps/flags</text>
+<text x="1100.0" y="219.55" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">Flags · propose change</text>
+<text x="1100.0" y="236.45000000000002" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">payload fields</text>
+<rect x="40" y="370" width="1180" height="330" rx="8" fill="#e9ecef" stroke="#495057" stroke-width="1"/>
+<text x="52" y="396.0" font-size="18" fill="#1e1e1e" text-anchor="start" font-weight="bold">Trust boundary — services/api (Fastify 5)</text>
+<rect x="60" y="410" width="260" height="110" rx="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="1"/>
+<text x="190.0" y="444.2" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">Identity resolver</text>
+<text x="190.0" y="461.09999999999997" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">synthetic identities, HttpOnly cookie</text>
+<text x="190.0" y="478.0" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">prod boot guard (NODE_ENV=production)</text>
+<text x="190.0" y="494.9" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">same-origin check</text>
+<rect x="350" y="410" width="240" height="110" rx="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="1"/>
+<text x="470.0" y="444.2" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">Action dispatcher</text>
+<text x="470.0" y="461.09999999999997" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">deny by default</text>
+<text x="470.0" y="478.0" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">one permission per action</text>
+<text x="470.0" y="494.9" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">unknown action → 403</text>
+<rect x="620" y="410" width="200" height="110" rx="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="1"/>
+<text x="720.0" y="452.65000000000003" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">packages/app-manifest</text>
+<text x="720.0" y="469.55" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">APPS[]: register · routes</text>
+<text x="720.0" y="486.45000000000005" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">seed · demoReset · executor</text>
+<rect x="850" y="410" width="170" height="110" rx="8" fill="#99e9f2" stroke="#0c8599" stroke-width="1"/>
+<text x="935.0" y="444.2" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">apps/refunds/server</text>
+<text x="935.0" y="461.09999999999997" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">refunds.request</text>
+<text x="935.0" y="478.0" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">review policy</text>
+<text x="935.0" y="494.9" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">refund executor</text>
+<rect x="1040" y="410" width="160" height="110" rx="8" fill="#d0bfff" stroke="#6741d9" stroke-width="1"/>
+<text x="1120.0" y="444.2" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">apps/flags/server</text>
+<text x="1120.0" y="461.09999999999997" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">flags.propose</text>
+<text x="1120.0" y="478.0" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">review policy</text>
+<text x="1120.0" y="494.9" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">publish in approval</text>
+<rect x="60" y="550" width="1140" height="130" rx="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="2"/>
+<text x="630.0" y="602.65" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">packages/server-core  +  packages/contracts   (platform controls, specified and reviewed by a human, written by Devin)</text>
+<text x="630.0" y="619.55" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">decideRequest: maker-checker — requester ≠ approver checked before role · one transaction: decision + audit event + execution job</text>
+<text x="630.0" y="636.4499999999999" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">writeAudit: append-only against application code · maskPii in DTOs and audit summaries · stable idempotency key per request · frozen DTOs (Zod 4)</text>
+<rect x="40" y="770" width="760" height="190" rx="8" fill="#e9ecef" stroke="#495057" stroke-width="1"/>
+<text x="52" y="794.0" font-size="16" fill="#1e1e1e" text-anchor="start" font-weight="bold">PostgreSQL 16 — app role tools_app; schema owned by tools_migrator</text>
+<rect x="60" y="810" width="170" height="120" rx="8" fill="#ffd8a8" stroke="#e8590c" stroke-width="1"/>
+<text x="145.0" y="857.65" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">approval_requests</text>
+<text x="145.0" y="874.55" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">payload immutable</text>
+<text x="145.0" y="891.4499999999999" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">(no UPDATE of payload)</text>
+<rect x="250" y="810" width="170" height="120" rx="8" fill="#ffd8a8" stroke="#e8590c" stroke-width="1"/>
+<text x="335.0" y="857.65" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">audit_events</text>
+<text x="335.0" y="874.55" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">INSERT only for tools_app</text>
+<text x="335.0" y="891.4499999999999" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">no UPDATE / DELETE</text>
+<rect x="440" y="810" width="160" height="120" rx="8" fill="#ffd8a8" stroke="#e8590c" stroke-width="1"/>
+<text x="520.0" y="849.1999999999999" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">feature_flags</text>
+<text x="520.0" y="866.0999999999999" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">version column</text>
+<text x="520.0" y="882.9999999999999" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">optimistic check</text>
+<text x="520.0" y="899.9" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">stale version → 409</text>
+<rect x="620" y="810" width="160" height="120" rx="8" fill="#ffd8a8" stroke="#e8590c" stroke-width="1"/>
+<text x="700.0" y="849.1999999999999" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">execution_jobs</text>
+<text x="700.0" y="866.0999999999999" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">unique per request</text>
+<text x="700.0" y="882.9999999999999" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">lease · attempts</text>
+<text x="700.0" y="899.9" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">retry_wait</text>
+<rect x="860" y="770" width="430" height="190" rx="8" fill="#e9ecef" stroke="#495057" stroke-width="1"/>
+<text x="872" y="794.0" font-size="16" fill="#1e1e1e" text-anchor="start" font-weight="bold">External side-effect boundary</text>
+<rect x="880" y="810" width="185" height="120" rx="8" fill="#b2f2bb" stroke="#2f9e44" stroke-width="1"/>
+<text x="972.5" y="849.1999999999999" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">services/worker</text>
+<text x="972.5" y="866.0999999999999" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">lease job → app executor</text>
+<text x="972.5" y="882.9999999999999" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">for job.kind → outcome</text>
+<text x="972.5" y="899.9" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">HTTP + Idempotency-Key, retry</text>
+<rect x="1105" y="810" width="165" height="120" rx="8" fill="#b2f2bb" stroke="#2f9e44" stroke-width="1"/>
+<text x="1187.5" y="849.1999999999999" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">services/payment-simulator</text>
+<text x="1187.5" y="866.0999999999999" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">separate process</text>
+<text x="1187.5" y="882.9999999999999" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">can drop responses</text>
+<text x="1187.5" y="899.9" font-size="13" fill="#1e1e1e" text-anchor="middle" font-weight="normal">SUCCEEDED / NEEDS_REVIEW</text>
+<rect x="1310" y="410" width="230" height="80" rx="8" fill="transparent" stroke="#495057" stroke-width="1" stroke-dasharray="6 4"/>
+<text x="1425.0" y="437.65000000000003" font-size="13" fill="#495057" text-anchor="middle" font-weight="normal">Company IdP (OIDC)</text>
+<text x="1425.0" y="454.55" font-size="13" fill="#495057" text-anchor="middle" font-weight="normal">replaces the identity resolver</text>
+<text x="1425.0" y="471.45000000000005" font-size="13" fill="#495057" text-anchor="middle" font-weight="normal">planned, not built</text>
+<rect x="1310" y="550" width="230" height="100" rx="8" fill="transparent" stroke="#495057" stroke-width="1" stroke-dasharray="6 4"/>
+<text x="1425.0" y="579.1999999999999" font-size="13" fill="#495057" text-anchor="middle" font-weight="normal">apps/kyc — case aggregate,</text>
+<text x="1425.0" y="596.0999999999999" font-size="13" fill="#495057" text-anchor="middle" font-weight="normal">assignment, SLAs, vendor webhooks</text>
+<text x="1425.0" y="612.9999999999999" font-size="13" fill="#495057" text-anchor="middle" font-weight="normal">registers via app-manifest</text>
+<text x="1425.0" y="629.9" font-size="13" fill="#495057" text-anchor="middle" font-weight="normal">scoped (docs/KYC_SCOPE.md), not built</text>
+<rect x="1310" y="830" width="230" height="80" rx="8" fill="transparent" stroke="#495057" stroke-width="1" stroke-dasharray="6 4"/>
+<text x="1425.0" y="857.65" font-size="13" fill="#495057" text-anchor="middle" font-weight="normal">Real PSP + reconciliation</text>
+<text x="1425.0" y="874.55" font-size="13" fill="#495057" text-anchor="middle" font-weight="normal">replaces the payment simulator</text>
+<text x="1425.0" y="891.4499999999999" font-size="13" fill="#495057" text-anchor="middle" font-weight="normal">planned, not built</text>
+<rect x="40" y="1000" width="1180" height="110" rx="8" fill="#e9ecef" stroke="#495057" stroke-width="1"/>
+<text x="52" y="1024.0" font-size="16" fill="#1e1e1e" text-anchor="start" font-weight="bold">Request lifecycle (every write in every tool)</text>
+<rect x="60" y="1040" width="270" height="60" rx="8" fill="#99e9f2" stroke="#0c8599" stroke-width="1"/>
+<text x="195.0" y="1058.6000000000001" font-size="12" fill="#1e1e1e" text-anchor="middle" font-weight="normal">1. Request</text>
+<text x="195.0" y="1074.2" font-size="12" fill="#1e1e1e" text-anchor="middle" font-weight="normal">maker (e.g. Ana Agent)</text>
+<text x="195.0" y="1089.8000000000002" font-size="12" fill="#1e1e1e" text-anchor="middle" font-weight="normal">permission refunds.request</text>
+<rect x="350" y="1040" width="270" height="60" rx="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="1"/>
+<text x="485.0" y="1058.6000000000001" font-size="12" fill="#1e1e1e" text-anchor="middle" font-weight="normal">2. Independent approval</text>
+<text x="485.0" y="1074.2" font-size="12" fill="#1e1e1e" text-anchor="middle" font-weight="normal">checker ≠ maker, server-enforced (403)</text>
+<text x="485.0" y="1089.8000000000002" font-size="12" fill="#1e1e1e" text-anchor="middle" font-weight="normal">permission refunds.review</text>
+<rect x="640" y="1040" width="270" height="60" rx="8" fill="#b2f2bb" stroke="#2f9e44" stroke-width="1"/>
+<text x="775.0" y="1058.6000000000001" font-size="12" fill="#1e1e1e" text-anchor="middle" font-weight="normal">3. Execution</text>
+<text x="775.0" y="1074.2" font-size="12" fill="#1e1e1e" text-anchor="middle" font-weight="normal">worker job (refunds) or in-tx publish (flags)</text>
+<text x="775.0" y="1089.8000000000002" font-size="12" fill="#1e1e1e" text-anchor="middle" font-weight="normal">exactly-once via idempotency key</text>
+<rect x="930" y="1040" width="270" height="60" rx="8" fill="#ffd8a8" stroke="#e8590c" stroke-width="1"/>
+<text x="1065.0" y="1058.6000000000001" font-size="12" fill="#1e1e1e" text-anchor="middle" font-weight="normal">4. Audit</text>
+<text x="1065.0" y="1074.2" font-size="12" fill="#1e1e1e" text-anchor="middle" font-weight="normal">append-only event per step, PII masked</text>
+<text x="1065.0" y="1089.8000000000002" font-size="12" fill="#1e1e1e" text-anchor="middle" font-weight="normal">visible to approvals.read</text>
+<polyline points="570.0,280 190.0,410" fill="none" stroke="#1e1e1e" stroke-width="2" marker-end="url(#m)"/>
+<rect x="300.0" y="325.0" width="160" height="40" fill="#ffffff" opacity="0.9"/>
+<text x="380.0" y="342.0" font-size="12" fill="#1e1e1e" text-anchor="middle" font-weight="normal">same-origin HTTP</text>
+<text x="380.0" y="357.6" font-size="12" fill="#1e1e1e" text-anchor="middle" font-weight="normal">HttpOnly cookie</text>
+<polyline points="880.0,280 935.0,410" fill="none" stroke="#0c8599" stroke-width="2" marker-end="url(#m)"/>
+<rect x="814.0" y="335.0" width="187" height="20" fill="#ffffff" opacity="0.9"/>
+<text x="907.5" y="350.0" font-size="12" fill="#0c8599" text-anchor="middle" font-weight="normal">POST /api/refunds/…</text>
+<polyline points="1100.0,280 1120.0,410" fill="none" stroke="#6741d9" stroke-width="2" marker-end="url(#m)"/>
+<rect x="1025.5" y="335.0" width="169" height="20" fill="#ffffff" opacity="0.9"/>
+<text x="1110.0" y="350.0" font-size="12" fill="#6741d9" text-anchor="middle" font-weight="normal">POST /api/flags/…</text>
+<polyline points="320,465.0 350,465.0" fill="none" stroke="#1e1e1e" stroke-width="2" marker-end="url(#m)"/>
+<polyline points="590,465.0 620,465.0" fill="none" stroke="#1e1e1e" stroke-width="2" marker-end="url(#m)"/>
+<polyline points="820,465.0 850,465.0" fill="none" stroke="#1e1e1e" stroke-width="2" marker-end="url(#m)"/>
+<polyline points="720.0,520 720,535 1120,535 1120.0,520" fill="none" stroke="#1e1e1e" stroke-width="2" marker-end="url(#m)"/>
+<polyline points="470.0,520 630.0,550" fill="none" stroke="#1e1e1e" stroke-width="2" marker-end="url(#m)"/>
+<rect x="425.0" y="525.0" width="250" height="20" fill="#ffffff" opacity="0.9"/>
+<text x="550.0" y="540.0" font-size="12" fill="#1e1e1e" text-anchor="middle" font-weight="normal">decideRequest · writeAudit</text>
+<polyline points="935.0,520 630.0,550" fill="none" stroke="#0c8599" stroke-width="2" marker-end="url(#m)"/>
+<polyline points="1120.0,520 630.0,550" fill="none" stroke="#6741d9" stroke-width="2" marker-end="url(#m)"/>
+<polyline points="630.0,680 145.0,810" fill="none" stroke="#1e1e1e" stroke-width="2" marker-end="url(#m)"/>
+<polyline points="630.0,680 335.0,810" fill="none" stroke="#1e1e1e" stroke-width="2" marker-end="url(#m)"/>
+<polyline points="630.0,680 700.0,810" fill="none" stroke="#1e1e1e" stroke-width="2" marker-end="url(#m)"/>
+<polyline points="630.0,680 520.0,810" fill="none" stroke="#6741d9" stroke-width="2" marker-end="url(#m)"/>
+<rect x="508.5" y="735.0" width="133" height="20" fill="#ffffff" opacity="0.9"/>
+<text x="575.0" y="750.0" font-size="12" fill="#6741d9" text-anchor="middle" font-weight="normal">publish in tx</text>
+<polyline points="780,870.0 880,870.0" fill="none" stroke="#2f9e44" stroke-width="2" marker-end="url(#m)"/>
+<rect x="799.5" y="860.0" width="61" height="20" fill="#ffffff" opacity="0.9"/>
+<text x="830.0" y="875.0" font-size="12" fill="#2f9e44" text-anchor="middle" font-weight="normal">lease</text>
+<polyline points="1065,870.0 1105,870.0" fill="none" stroke="#2f9e44" stroke-width="2" marker-end="url(#m)"/>
+<polyline points="1310,870.0 1270,870.0" fill="none" stroke="#495057" stroke-width="1.5" marker-end="url(#m)" stroke-dasharray="6 4"/>
+<polyline points="330,1070.0 350,1070.0" fill="none" stroke="#1e1e1e" stroke-width="2" marker-end="url(#m)"/>
+<polyline points="620,1070.0 640,1070.0" fill="none" stroke="#1e1e1e" stroke-width="2" marker-end="url(#m)"/>
+<polyline points="910,1070.0 930,1070.0" fill="none" stroke="#1e1e1e" stroke-width="2" marker-end="url(#m)"/>
+<text x="40" y="48.0" font-size="28" fill="#1e1e1e" text-anchor="start" font-weight="bold">Governed internal-tools platform — system design (as built)</text>
+<text x="40" y="76.0" font-size="14" fill="#495057" text-anchor="start" font-weight="normal">Solid = in the tree and covered by tests/contracts.  Dashed = planned or scoped, not built.  One request lifecycle: request → independent approval → execution → audit.</text>
+<text x="1310" y="1012.0" font-size="12" fill="#495057" text-anchor="start" font-weight="normal">Colour key</text>
+<text x="1310" y="1027.6" font-size="12" fill="#495057" text-anchor="start" font-weight="normal">blue  platform layer (built once)</text>
+<text x="1310" y="1043.2" font-size="12" fill="#495057" text-anchor="start" font-weight="normal">teal  refunds app   violet  feature-flags app</text>
+<text x="1310" y="1058.8" font-size="12" fill="#495057" text-anchor="start" font-weight="normal">amber  PostgreSQL   green  worker / side effects</text>
+<text x="1310" y="1074.4" font-size="12" fill="#495057" text-anchor="start" font-weight="normal">grey dashed  planned, not built</text>
+</svg>

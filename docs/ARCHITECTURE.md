@@ -4,6 +4,10 @@ This document matches the merged tree at the head of the PR. Anything not in the
 
 ## Diagram
 
+![System design](diagrams/system-design.svg)
+
+Editable source: `docs/diagrams/system-design.excalidraw` (open at excalidraw.com or in the VS Code Excalidraw extension). Regenerate both files with `python3 docs/diagrams/generate.py`. The Mermaid version below carries the same content for readers without image rendering.
+
 ```mermaid
 flowchart TB
     subgraph CLIENT["Browser (web/, React + Vite)"]
