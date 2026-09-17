@@ -6,7 +6,7 @@
 
 ## Decision 1: Build one real outcome, not a Power Apps clone
 
-We built refunds end to end: agent requests, an independent reviewer approves, a worker executes against a payment simulator with a stable idempotency key, and every step lands in an append-only audit log. We then stamped a second app (feature flags) from a playbook to measure reuse, and scoped KYC without building it. We did not build a form designer, connectors, or a workflow engine. Power Apps' value is its operating model (managed runtime, attested data store, DLP, non-engineer makers); a two-hour build cannot replicate that and should not claim to. Evidence: `README.md`, `docs/CAPABILITY_MATRIX.md`.
+We built refunds end to end: agent requests, an independent reviewer approves, a worker executes against a payment simulator with a stable idempotency key, and every step lands in an append-only audit log. We then stamped a second app (feature flags) from a playbook to measure reuse, and scoped KYC without building it. We did not build a form designer, connectors, or a workflow engine. Power Apps' value is its operating model (managed runtime, attested data store, DLP, non-engineer makers); a two-hour build cannot replicate that and should not claim to. Evidence: `docs/PROTOTYPE_GUIDE.md`, `docs/CAPABILITY_MATRIX.md`.
 
 ## Decision 2: Put the controls where an agent cannot remove them
 

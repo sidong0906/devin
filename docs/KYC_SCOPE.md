@@ -9,7 +9,7 @@ we have not seen the client's actual KYC workflow, vendor integrations, SLAs, or
 
 | Platform control | Reused? | Notes |
 |---|---|---|
-| Identity resolution + prod guard | yes | swap demo auth for SSO first (see README "Deferred") |
+| Identity resolution + prod guard | yes | swap demo auth for SSO first (see README "What is deliberately not here") |
 | Deny-by-default action registry | yes | new actions: `kyc.claim`, `kyc.decide`, `kyc.escalate`, `kyc.request_info` |
 | Maker-checker `decideRequest` | partly | KYC decisions are usually **single-reviewer with four-eyes only on escalations/high-risk**; the current policy is "always a second person". Needs a per-kind policy hook: `requiresSecondReviewer(request) => boolean`. Shared-code change. |
 | Append-only audit | yes | but summaries must be reviewed for PII: KYC objects *are* PII (names, DOB, document numbers). Allowlisted summary builder needs a KYC-specific allowlist. |
