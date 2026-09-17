@@ -1,5 +1,5 @@
-import { DEMO_USERS, DemoUserKey, HTTP_STATUS, SEED_PAYMENTS, maskEmail } from "@tools/contracts";
-import type { Actor, ApprovalRequestDto, AuditEventDto, ErrorCode, PaymentDto } from "@tools/contracts";
+import { DEMO_USERS, DemoUserKey, HTTP_STATUS, SEED_FLAGS, SEED_PAYMENTS, maskEmail } from "@tools/contracts";
+import type { Actor, ApprovalRequestDto, AuditEventDto, ErrorCode, FlagDto, PaymentDto } from "@tools/contracts";
 
 /**
  * Deterministic in-memory stand-in for the API, used ONLY when VITE_USE_FIXTURES=1.
@@ -18,6 +18,14 @@ export function createFixtureFetch(): typeof fetch {
     customerEmailMasked: maskEmail(p.customerEmail),
     capturedAt: p.capturedAt,
     refundRequestId: null,
+  }));
+  const flags: FlagDto[] = SEED_FLAGS.map((f) => ({
+    key: f.key,
+    value: f.value,
+    version: 0,
+    updatedAt: "2026-09-15T09:00:00Z",
+    updatedById: null,
+    pendingRequestId: null,
   }));
   const requests: ApprovalRequestDto[] = [];
   const audit: AuditEventDto[] = [];
@@ -48,9 +56,46 @@ export function createFixtureFetch(): typeof fetch {
     return req;
   }
 
-  // Seed one pending request so the approvals queue is not empty on first load.
+  function createFlagRequest(actor: Actor, flag: FlagDto, newValue: boolean): ApprovalRequestDto {
+    const id = nextId("req");
+    const req: ApprovalRequestDto = {
+      id,
+      kind: "flag_change",
+      requesterId: actor.id,
+      requesterName: actor.displayName,
+      summary: `kind=flag_change reason=${flag.key}->${newValue}`,
+      payload: { kind: "flag_change", flagKey: flag.key, expectedVersion: flag.version, newValue },
+      decision: "PENDING",
+      decidedById: null,
+      decidedAt: null,
+      execution: "NONE",
+      executionResult: null,
+      createdAt: now(),
+    };
+    requests.push(req);
+    flag.pendingRequestId = id;
+    addAudit(actor.id, "flags.propose", id, "ok", `kind=flag_change flag=${flag.key} from=${flag.value} to=${newValue} v=${flag.version}`);
+    return req;
+  }
+
+  function publishFlag(req: ApprovalRequestDto, deciderId: string) {
+    const payload = req.payload;
+    if (payload.kind !== "flag_change") return;
+    const flag = flags.find((f) => f.key === payload.flagKey);
+    if (!flag) return;
+    flag.value = payload.newValue;
+    flag.version += 1;
+    flag.updatedById = deciderId;
+    flag.updatedAt = now();
+    flag.pendingRequestId = null;
+    addAudit(deciderId, "flags.published", req.id, "ok", `kind=flag_change flag=${flag.key} value=${flag.value} v=${flag.version}`);
+  }
+
+  // Seed one pending request of each kind so the approvals queue is not empty on first load.
   const seededPayment = payments[1];
   if (seededPayment) createRequest(DEMO_USERS.agent, seededPayment);
+  const seededFlag = flags[2];
+  if (seededFlag) createFlagRequest(DEMO_USERS.dual, seededFlag, true);
 
   function scheduleExecution(req: ApprovalRequestDto) {
     req.execution = "QUEUED";
@@ -156,7 +201,29 @@ export function createFixtureFetch(): typeof fetch {
       req.decidedById = me.id;
       req.decidedAt = now();
       addAudit(me.id, "approvals.decide", req.id, "ok", `${req.decision.toLowerCase()} ${req.summary}`);
-      if (req.decision === "APPROVED") scheduleExecution(req);
+      if (req.kind === "flag_change") {
+        if (req.decision === "APPROVED") publishFlag(req, me.id);
+        else {
+          const flag = flags.find((f) => f.key === (req.payload.kind === "flag_change" ? req.payload.flagKey : ""));
+          if (flag) flag.pendingRequestId = null;
+        }
+      } else if (req.decision === "APPROVED") scheduleExecution(req);
+      return json({ requestId: req.id, request: req });
+    }
+
+    if (method === "GET" && path === "/api/flags") return json({ flags });
+
+    if (method === "POST" && path === "/api/actions/flags.propose") {
+      if (!has(me, "flags.propose")) return error("FORBIDDEN", "Action flags.propose requires permission flags.propose");
+      const b = body as { flagKey?: unknown; expectedVersion?: unknown; newValue?: unknown } | null;
+      if (typeof b?.flagKey !== "string" || typeof b.expectedVersion !== "number" || typeof b.newValue !== "boolean") {
+        return error("VALIDATION", "flagKey, expectedVersion and newValue are required");
+      }
+      const flag = flags.find((f) => f.key === b.flagKey);
+      if (!flag) return error("NOT_FOUND", `Flag ${b.flagKey} not found`);
+      if (flag.version !== b.expectedVersion) return error("STALE_VERSION", `flag ${flag.key} is at version ${flag.version}, expected ${b.expectedVersion}`);
+      if (flag.pendingRequestId) return error("DUPLICATE_REQUEST", `a change is already proposed for flag ${flag.key} v${flag.version}`);
+      const req = createFlagRequest(me, flag, b.newValue);
       return json({ requestId: req.id, request: req });
     }
 

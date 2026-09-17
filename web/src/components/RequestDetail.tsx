@@ -126,8 +126,8 @@ export function RequestDetail({ actor, requestId, onNavigate }: Props) {
             ) : (
               <>
                 <dt>Flag</dt><dd><code>{request.payload.flagKey}</code></dd>
-                <dt>Expected version</dt><dd>{request.payload.expectedVersion}</dd>
-                <dt>New value</dt><dd>{String(request.payload.newValue)}</dd>
+                <dt>Change</dt><dd>{request.payload.newValue ? "off" : "on"} → <strong>{request.payload.newValue ? "on" : "off"}</strong> <span className="muted small">(newValue={String(request.payload.newValue)})</span></dd>
+                <dt>Expected version</dt><dd>v{request.payload.expectedVersion} <span className="muted small">(publish is refused if the flag moved)</span></dd>
               </>
             )}
             <dt>Summary</dt><dd>{request.summary}</dd>
@@ -192,6 +192,9 @@ export function RequestDetail({ actor, requestId, onNavigate }: Props) {
             </div>
           ) : null}
           {request.decision === "REJECTED" ? <p className="muted">Rejected requests create no execution job.</p> : null}
+          {request.kind === "flag_change" && request.decision === "APPROVED" ? (
+            <div className="alert alert-ok" role="status">Flag published synchronously inside the approval transaction; no execution job is involved.</div>
+          ) : null}
         </div>
       </div>
 
