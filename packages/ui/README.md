@@ -5,70 +5,138 @@ it does not import `@tools/contracts` and knows nothing about refunds, flags, or
 screens in `web/src/apps/<name>/` and the shared shell in `web/src/platform/` compose these
 primitives; they do not write their own CSS for things that exist here.
 
+It is built **on [Radix Themes](https://www.radix-ui.com/themes/docs/overview/getting-started)**, not
+from scratch. Radix provides the accessible components, the colour scales, typography, spacing and
+focus states; this package provides the fintech-specific vocabulary on top (the five status tones,
+the load/empty/error patterns, the app/platform ownership rules) and a stable API so a new tool
+never talks to Radix directly.
+
+```
+Radix Themes         components, 12-step colour scales, type/space/radius scales, focus rings, a11y
+      ↓
+packages/ui          UiProvider (one fixed theme), --ui-* semantic tokens, Tone → colour mapping,
+                     thin wrappers with project defaults (Badge, Alert, Button, Card, Table, ...)
+      ↓
+web/src/platform     contract-bound components: which Tone does ExecutionState X get, ErrorBox
+      ↓
+web/src/apps/<name>  screens; compose the layers above, almost no className
+```
+
 ```
 src/
-  tokens.css        design tokens: the only file allowed to contain raw colours and pixel values
-  primitives.css    styles for the primitives, referencing tokens only
-  styles.css        imports both; the one stylesheet a host app loads
-  tone.ts           the semantic Tone type and cx() class helper
-  primitives/       one React component file per building block
-  index.ts          public surface
+  styles.css          imports Radix Themes' stylesheet, then tokens.css, then overrides.css
+  tokens.css          --ui-* semantic aliases over Radix variables; the only file naming a raw scale colour
+  overrides.css       the handful of rules Radix does not provide (~15 lines, tokens only)
+  tone.ts             Tone type, TONE_COLOR (tone → Radix scale), cx()
+  primitives/         one React component file per building block, each wrapping a Radix component
+  index.ts            public surface; also re-exports a small Radix escape hatch (Box, Flex, Text, ...)
 ```
+
+## Why Radix Themes
+
+Chosen over custom-built primitives (PR #4 did that; this replaces them) and over the other common
+options:
+
+| Option | Why not / why |
+|---|---|
+| Custom CSS + components | Every accessibility detail (focus rings, contrast, keyboard handling) is our bug to find. ~300 lines of CSS to maintain per tool family. Fine for a demo, not for 13 tools. |
+| Tailwind-only | A utility layer, not a component library; still hand-writing Table/Select/Callout semantics. |
+| MUI / Ant / Chakra | Full-featured, but heavy runtime theming, opinionated look that is hard to make "ours", and larger bundles. |
+| shadcn/ui | Copies component source into the repo (Radix primitives + Tailwind). Good fit for a product; for a platform it means we own every copied file. |
+| **Radix Themes** | Pre-styled components on top of Radix's accessible primitives; CSS-variable theming (no runtime CSS-in-JS); 12-step colour scales built for consistent text/background contrast; `Theme` props for accent/gray/radius/scale; small, tree-shakeable, MIT. Maps 1:1 onto the primitives we already had. |
+
+Cost: one dependency (`@radix-ui/themes`, pinned in the pnpm catalog) and ~80 kB gzipped of CSS
+loaded once per tool. Radix ships `styles.css` as one file; splitting per-component CSS is possible
+later if the size matters.
 
 ## Layers
 
-```
-tokens  →  primitives  →  patterns  →  domain components  →  screens
-(css)      (this pkg)     (this doc)   (web/src/platform)     (web/src/apps/<name>)
-```
-
-1. **Tokens** (`tokens.css`): colour, type, spacing, radius as CSS variables prefixed `--ui-`. Change a
-   token and every tool changes; nothing else in the tree should hard-code a hex value.
-2. **Primitives** (`primitives/`): thin React components that own a class name and a small amount of
-   behaviour (default `type="button"`, `aria-pressed`, `role`). They accept and forward native HTML props.
-3. **Patterns** (below): how primitives combine for the situations every governed tool hits: loading,
-   empty, error, status, and the request/approve action row.
-4. **Domain components** (`web/src/platform/`): primitives bound to the contract, e.g. `ExecutionBadge`
-   maps every `ExecutionState` to a `Badge` tone and a title. These are the only place that decides
-   "which tone does state X get".
-5. **Screens** (`web/src/apps/<name>/`): compose 1–4. A screen should contain almost no `className`.
+1. **Theme** (`UiProvider`): wraps the app root once. Sets `accentColor="indigo" grayColor="slate"
+   radius="medium" scaling="95%"`. Fixed on purpose: tools should look the same, not pick an accent.
+2. **Tokens** (`tokens.css`): `--ui-*` variables that alias Radix scale steps
+   (`--ui-ok-bg: var(--green-3)`). Screens and overrides reference `--ui-*`, never `--green-3` directly,
+   so re-mapping a tone is a one-line change.
+3. **Primitives** (`primitives/`): thin wrappers that pin a Radix variant and size, add the project's
+   class names (`badge`, `badge-warn`, `btn`, `table`...) for tests and the few overrides, and add
+   behaviour Radix leaves to the caller (`type="button"`, `aria-pressed`, `role`).
+4. **Patterns** (below): how primitives combine for loading, empty, error, status and the action row.
+5. **Domain components** (`web/src/platform/`): primitives bound to the contract, e.g. `ExecutionBadge`
+   maps every `ExecutionState` to a `Badge` tone and a title. The only place that decides "which tone
+   does state X get".
+6. **Screens** (`web/src/apps/<name>/`): compose 1–5.
 
 ## Tone: the one vocabulary for status
 
-Every status element (`Badge`, `Alert`) takes a `tone`. The tone is semantic, not decorative:
+Every status element (`Badge`, `Alert`) takes a `tone`. The tone is semantic, not decorative, and each
+maps to exactly one Radix colour scale (`TONE_COLOR` in `tone.ts`):
 
-| Tone | Meaning | Use for | Never for |
-|---|---|---|---|
-| `ok` | confirmed success | `SUCCEEDED`, `APPROVED`, published | anything unconfirmed |
-| `warn` | unresolved, needs a human | `NEEDS_REVIEW`, stale data, "reconcile before acting" | success or failure |
-| `danger` | denied, rejected, failed | `REJECTED`, 403, 409, request errors | warnings |
-| `pending` | in progress or waiting | `PENDING`, `QUEUED`, `LEASED`, `RETRY_WAIT` | terminal states |
-| `neutral` | informational | `NONE`, counts, metadata | outcomes |
+| Tone | Radix scale | Meaning | Use for | Never for |
+|---|---|---|---|---|
+| `ok` | `green` | confirmed success | `SUCCEEDED`, `APPROVED`, published | anything unconfirmed |
+| `warn` | `amber` | unresolved, needs a human | `NEEDS_REVIEW`, stale data, "reconcile before acting" | success or failure |
+| `danger` | `red` | denied, rejected, failed | `REJECTED`, 403, 409, request errors | warnings |
+| `pending` | `indigo` | in progress or waiting | `PENDING`, `QUEUED`, `LEASED`, `RETRY_WAIT` | terminal states |
+| `neutral` | `gray` | informational | `NONE`, counts, metadata | outcomes |
 
 Rule that matters in a fintech tool: **an unresolved outcome must never look like success.**
-`warn` has a border and `ok` does not, so they are distinguishable without colour; the web test
-`Badges.test.tsx` asserts that only `SUCCEEDED` gets the `ok` tone.
+`warn` badges carry an inset border that `ok` badges do not, so they are distinguishable without
+colour; the web test `Badges.test.tsx` asserts that only `SUCCEEDED` gets the `ok` tone, and
+`primitives.test.tsx` asserts the five tones map to five distinct Radix scales.
 
 ## Primitives
 
-| Component | Element | Props beyond native | Notes |
+| Component | Wraps (Radix) | Props beyond Radix | Notes |
 |---|---|---|---|
-| `Badge` | `span.badge` | `tone` | status pill; pass `title` for the long explanation and `data-state` for tests |
-| `Chip`, `ChipGroup` | `span.chip`, `span.chips` | — | monospace identifiers (permissions, keys) |
-| `Alert` | `div.alert` | `tone`, `role?` | `role` defaults to `alert` for warn/danger, `status` otherwise |
-| `Button` | `button.btn` | `variant` (`primary`/`secondary`/`danger`), `active?` | `type="button"` by default; `active` sets `aria-pressed` |
-| `ActionsRow`, `ButtonGroup` | `div` | — | action row under a card; tight filter group (`role=group`) |
-| `Card` | `section.card` | — | one concern per card, `<h3>` as its heading |
-| `Grid2` | `div.grid-2` | — | two columns, one below 900px |
-| `SectionHead` | `div.section-head` | `heading` | `<h2>` plus right-aligned controls |
-| `EmptyState` | `p.empty` | — | dashed placeholder |
-| `Loading` | `p.muted` | — | text, not a spinner; the API is fast or it is broken |
-| `KeyValueList`, `KeyValueRow` | `dl.kv` | `label` | label/value grid; raw `<dt>/<dd>` pairs are also fine |
-| `Table` | `table.table` | `clickable?` | `className="num"` on numeric cells, `"actions"` on the trailing action cell |
-| `Tabs`, `TabLink` | `nav.tabs`, `a.tab` | `active` | anchor-based; the host owns navigation; sets `aria-current` |
-| `Select` | `select.select` | — | native select with system styling |
+| `Badge` | `Badge` soft | `tone` | status pill; pass `title` for the long explanation and `data-state` for tests |
+| `Chip`, `ChipGroup` | `Code` soft, `Flex` | — | monospace identifiers (permissions, keys) |
+| `Alert` | `Callout.Root/Text` surface | `tone`, `role?` | `role` defaults to `alert` for warn/danger, `status` otherwise |
+| `Button` | `Button` | `variant` (`primary`/`secondary`/`danger`), `active?` | `type="button"` by default; `active` → soft variant + `aria-pressed` |
+| `ActionsRow`, `ButtonGroup` | `Flex` | — | action row under a card; tight filter group (`role=group`) |
+| `Card`, `CardTitle` | `Card` surface (as `<section>`), `Heading` | — | one concern per card; `CardTitle` is the uppercase `<h3>` |
+| `Grid2` | `Grid` | — | two columns from the `md` breakpoint, one below |
+| `SectionHead` | `Flex` + `Heading` | `heading` | `<h2>` plus right-aligned controls |
+| `EmptyState` | — | — | dashed placeholder (`p.empty`) |
+| `Loading` | `Text` | — | text, not a spinner; the API is fast or it is broken |
+| `KeyValueList`, `KeyValueRow` | `DataList.Root/Item/Label/Value` | `label` | label/value grid, renders `<dl>/<dt>/<dd>`; always use `KeyValueRow` |
+| `Table.Root/Head/Body/Row/Th/Td` | `Table.*` surface | `clickable?` on Root | `className="num"` on numeric cells, `"actions"` on the trailing action cell |
+| `Tabs`, `TabLink` | `TabNav.Root/Link` | `active` | anchor-based; the host owns navigation; `active` sets `aria-current="page"` |
+| `Select` | — (native `<select>`) | — | kept native so it works in plain forms and jsdom; styled with tokens |
 
-Text utilities (plain classes, no component): `.muted`, `.small`, `.mono`, `.danger-text`.
+### Dashboard layer (shell, widgets, charts)
+
+Internal-tool users expect the Power Apps shape: a left rail of tools, a header, KPI tiles, charts, then
+the table. These primitives give every tool that shape from real API data; the tables stay the record.
+
+| Component | Built on | Props | Notes |
+|---|---|---|---|
+| `AppShell` | CSS grid | `sidebar`, `header`, `children` | 232px sticky rail + sticky header + grey canvas; collapses to one column under 900px |
+| `Sidebar`, `NavSection`, `NavItem` | anchors | `brand`, `footer`; `active`, `icon`, `meta` | `NavItem` sets `aria-current="page"`; the host owns routing |
+| `AppIcon` | `span` | `color` (tone or Radix scale), `size` | coloured tile behind an icon; a tool's identity colour, separate from status tones |
+| `PageHeader` | `Flex` + `Heading` | `icon`, `title`, `description`, `actions` | replaces `SectionHead` at the top of a tool screen |
+| `StatTile`, `StatGrid` | `Box`, `Grid` | `label`, `value`, `hint`, `tone`, `icon` | KPI card with a tone-coloured top border; grid auto-fits ~190px columns |
+| `Meter` | `Progress` soft | `label`, `value`, `max`, `tone`, `caption` | labelled progress bar for "x of y reached this stage" |
+| `ChartCard` | `Box` | `title`, `description`, `actions` | the frame every chart or table sits in; use `.dashboard-grid` + `.span-N` (12 columns) to lay cards out |
+| `DonutChart` | Recharts `PieChart` | `data: Slice[]`, `centerLabel`, `height` | total in the middle; renders `ChartEmpty` when everything is zero |
+| `BarsChart` | Recharts `BarChart` | `data: Slice[]`, `layout`, `tone` | vertical or horizontal; per-bar tone/colour |
+| `TrendChart` | Recharts `AreaChart` | `data: TrendPoint[]`, `series: Series[]` | stacked areas, one per series |
+| `Icons` | `@radix-ui/react-icons` | — | curated re-export; add to `icons.ts`, do not import the package elsewhere |
+
+Chart colours come from the same place as everything else: a `Slice`/`Series` takes either a `tone`
+(status: `ok`/`warn`/`danger`/`pending`/`neutral`) or a `color` from `CHART_SERIES` (categories such as
+tools). Fills resolve to `var(--<scale>-9)`, so charts follow the theme and stay legible against step-1/2
+backgrounds. `colorProps(app.color)` converts a tool's identity colour into the right prop. Every chart
+has `role="img"` and an `aria-label` that states the numbers, so the picture is never the only copy.
+
+What a dashboard may show: counts and shares derived from contract DTOs the screen already fetched
+(`web/src/platform/metrics.ts` for the approvals list). What it may not do: fetch a second, unaudited
+source, or colour an unresolved state green.
+
+Text utilities (plain classes): `.muted`, `.small`, `.mono`, `.danger-text`.
+
+**Escape hatch.** `index.ts` re-exports `Box, Flex, Grid, Text, Heading, Code, Separator, Link` from
+Radix for one-off layout. Anything with a colour or a status goes through a primitive above so the
+tone rules hold. Do not import `@radix-ui/themes`, `@radix-ui/react-icons` or `recharts` from `web/`;
+the boundary is this package.
 
 ## Patterns
 
@@ -90,21 +158,30 @@ case). The UI hides buttons only as a courtesy; authorization is the server's.
 
 **Request detail.** `Grid2` with two `Card`s: the immutable payload (`KeyValueList`) and the decision +
 execution state (`Badge`s, `ActionsRow`, then outcome `Alert`s). App-specific payload fields plug in
-via `WebApp.PayloadFields`.
+via `WebApp.PayloadFields` and render `KeyValueRow`s.
 
 **Filters.** `ButtonGroup` of `Button variant="secondary" active={…}`; the group has `aria-label`.
 
-## Adding a primitive
+## Accessibility baseline
 
-1. Add the class rules to `primitives.css` using tokens only.
-2. Add `primitives/<Name>.tsx` forwarding native props and using `cx`.
-3. Export it from `index.ts`; add a test in `primitives.test.tsx` if it has behaviour (roles, aria).
+Inherited from Radix: visible focus rings, colour steps chosen for contrast (step 11 text on step 3
+background), keyboard handling in `TabNav`. Added here: `Alert` roles, `Button` `aria-pressed`,
+`TabLink`/`NavItem` `aria-current`, the warn border, chart `aria-label`s. Status is never colour-only:
+every badge has text, every tile has a label, and `title` carries the long explanation.
+
+## Adding or changing a primitive
+
+1. Prefer wrapping an existing Radix component (pin its `variant`/`size`, add the project class name)
+   over new CSS. If a rule is needed, add it to `overrides.css` using `--ui-*` tokens only.
+2. Add `primitives/<Name>.tsx` forwarding Radix props and using `cx`; export it from `index.ts`.
+3. Add a test in `primitives.test.tsx` if it has behaviour (roles, aria, tone mapping).
 4. Document it in the table above. If it encodes a status, it must take a `Tone`, not a colour.
 
-If a tool needs something twice, it belongs here. If it needs it once, it stays in the tool.
+If a tool needs something twice, it belongs here. If it needs it once, use the escape hatch in the tool.
 
 ## Ownership
 
 `packages/ui` is CODEOWNERS-protected like the other shared packages. Devin sessions building a new tool
-compose from it and may propose additions, but the shared vocabulary (tones, primitives) changes only
-with a human review, the same rule as `packages/contracts`.
+compose from it and may propose additions, but the shared vocabulary (tones, primitives, the theme) changes
+only with a human review, the same rule as `packages/contracts`. Radix Themes, Radix Icons and Recharts
+are pinned in `pnpm-workspace.yaml`'s catalog so all packages upgrade together.

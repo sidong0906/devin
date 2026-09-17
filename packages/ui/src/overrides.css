@@ -1,0 +1,91 @@
+/* The few rules Radix Themes does not provide. Tokens only, no raw values. */
+body { margin: 0; }
+
+.muted { color: var(--ui-fg-muted); }
+.small { font-size: var(--ui-text-sm); }
+.mono { font-family: var(--ui-font-mono); }
+.danger-text { color: var(--ui-danger); }
+
+/* warn must be distinguishable from ok without colour: it carries a border. */
+.badge-warn { box-shadow: inset 0 0 0 1px var(--ui-warn-border); }
+
+.empty { color: var(--ui-fg-muted); padding: var(--ui-space-6); text-align: center; border: 1px dashed var(--ui-border); border-radius: var(--ui-radius-md); background: var(--ui-surface); margin: var(--ui-space-3) 0; }
+
+.table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.table .actions { white-space: nowrap; }
+.table.clickable tbody tr { cursor: pointer; }
+.table.clickable tbody tr:hover, .table.clickable tbody tr:focus-visible { background: var(--ui-surface-hover); outline: none; }
+
+/* Native <select>: kept native so it works in forms and jsdom; styled with theme tokens. */
+.select { font: inherit; font-size: var(--ui-text-md); padding: var(--ui-space-1) var(--ui-space-2); border: 1px solid var(--ui-border); border-radius: var(--ui-radius-sm); background: var(--ui-surface); color: var(--ui-fg); }
+
+/* Values are prose with inline annotations; a flex container would swallow the spaces between them. */
+.kv .rt-DataListValue { display: block; }
+
+/* ---- Shell: sidebar rail + header + tinted canvas ---- */
+.shell { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 100vh; background: var(--gray-2); }
+.shell-sidebar { background: var(--color-panel-solid); border-right: 1px solid var(--ui-border); position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.shell-main { min-width: 0; display: flex; flex-direction: column; }
+.shell-header { position: sticky; top: 0; z-index: 2; background: var(--color-panel-solid); border-bottom: 1px solid var(--ui-border); padding: var(--ui-space-2) var(--ui-space-6); }
+.shell-content { padding: var(--ui-space-4) var(--ui-space-6) var(--ui-space-6); max-width: 1320px; width: 100%; box-sizing: border-box; }
+@media (max-width: 900px) {
+  .shell { grid-template-columns: 1fr; }
+  .shell-sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--ui-border); }
+  .sidebar-items { display: flex; flex-wrap: wrap; gap: var(--ui-space-1); }
+  .nav-section { display: contents; }
+  .nav-section-title { display: none; }
+}
+
+.sidebar { display: flex; flex-direction: column; height: 100%; padding: var(--ui-space-3); box-sizing: border-box; }
+.sidebar-brand { display: flex; align-items: center; gap: var(--ui-space-2); padding: var(--ui-space-2) var(--ui-space-2) var(--ui-space-4); font-weight: 700; }
+.sidebar-items { flex: 1; }
+.sidebar-footer { padding: var(--ui-space-2); color: var(--ui-fg-muted); font-size: var(--ui-text-sm); }
+.nav-section + .nav-section { margin-top: var(--ui-space-4); }
+.nav-section-title { color: var(--ui-fg-muted); text-transform: uppercase; letter-spacing: 0.06em; padding: 0 var(--ui-space-2); margin: 0 0 var(--ui-space-1); }
+.nav-item { display: flex; align-items: center; gap: var(--ui-space-2); padding: 7px var(--ui-space-2); border-radius: var(--ui-radius-md); color: var(--ui-fg); text-decoration: none; font-size: var(--ui-text-md); }
+.nav-item:hover { background: var(--gray-3); }
+.nav-item:focus-visible { outline: 2px solid var(--focus-8); outline-offset: 1px; }
+.nav-item.active { background: var(--accent-3); color: var(--accent-11); font-weight: 600; }
+.nav-item-icon { display: inline-flex; }
+.nav-item-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav-item-meta { font-size: var(--ui-text-sm); }
+
+.app-icon { display: inline-flex; align-items: center; justify-content: center; color: white; border-radius: var(--ui-radius-sm); flex: none; }
+.app-icon-sm { width: 22px; height: 22px; }
+.app-icon-md { width: 28px; height: 28px; }
+.app-icon-lg { width: 40px; height: 40px; border-radius: var(--ui-radius-md); }
+.app-icon-lg svg { width: 22px; height: 22px; }
+
+.page-header { display: flex; align-items: center; gap: var(--ui-space-3); margin: var(--ui-space-2) 0 var(--ui-space-4); }
+.page-header-text { flex: 1; min-width: 0; }
+.page-header-actions { display: flex; gap: var(--ui-space-2); align-items: center; }
+
+/* ---- Stat tiles, meters, chart cards ---- */
+.stat { position: relative; overflow: hidden; padding: var(--ui-space-4); border-radius: var(--ui-radius-md); background: var(--color-panel-solid); border: 1px solid var(--ui-border); border-top: 4px solid var(--accent-9); }
+.stat-label { color: var(--ui-fg-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.stat-value { color: var(--accent-11); line-height: 1.15; margin: 2px 0; font-variant-numeric: tabular-nums; }
+.stat-hint { color: var(--ui-fg-muted); }
+.stat-icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-4); color: var(--accent-11); flex: none; }
+.stat-icon svg { width: 18px; height: 18px; }
+.stat-neutral .stat-value { color: var(--ui-fg); }
+
+.meter + .meter { margin-top: var(--ui-space-3); }
+
+.chart-card { padding: var(--ui-space-4); border-radius: var(--ui-radius-md); background: var(--color-panel-solid); border: 1px solid var(--ui-border); min-width: 0; }
+.chart { position: relative; width: 100%; }
+.chart-empty { border: 1px dashed var(--ui-border); border-radius: var(--ui-radius-sm); }
+.donut-center { position: absolute; left: 0; right: 0; top: 42%; transform: translateY(-50%); text-align: center; pointer-events: none; }
+.chart .recharts-legend-item-text { color: var(--ui-fg-muted) !important; }
+.chart .recharts-cartesian-axis-tick-value { fill: var(--ui-fg-muted); }
+
+.dashboard-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--ui-space-3); margin: var(--ui-space-3) 0; }
+.span-3 { grid-column: span 3; }
+.span-4 { grid-column: span 4; }
+.span-5 { grid-column: span 5; }
+.span-6 { grid-column: span 6; }
+.span-8 { grid-column: span 8; }
+.span-12 { grid-column: span 12; }
+@media (max-width: 1100px) { .span-3, .span-4, .span-5, .span-6, .span-8 { grid-column: span 12; } }
+
+/* Cards, tables and empty states sit on the grey canvas, so they need the same white surface as tiles. */
+.card, .table { background: var(--color-panel-solid); }

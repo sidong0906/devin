@@ -7,7 +7,7 @@ import { ErrorBox } from "./ErrorBox";
 import { AuditTimeline } from "./AuditTimeline";
 import { appForKind } from "../apps";
 import { GenericPayloadFields } from "./GenericPayloadFields";
-import { ActionsRow, Alert, Button, Card, ChipGroup, Grid2, KeyValueList, Loading, SectionHead } from "@tools/ui";
+import { ActionsRow, Alert, Button, Card, CardTitle, ChipGroup, Grid2, KeyValueList, KeyValueRow, Loading, SectionHead } from "@tools/ui";
 
 type Props = { actor: Actor; requestId: string; onNavigate: (hash: string) => void };
 
@@ -114,22 +114,22 @@ export function RequestDetail({ actor, requestId, onNavigate }: Props) {
 
       <Grid2>
         <Card>
-          <h3>Immutable payload</h3>
+          <CardTitle>Immutable payload</CardTitle>
           <KeyValueList>
-            <dt>Kind</dt><dd><code>{request.payload.kind}</code></dd>
+            <KeyValueRow label="Kind"><code>{request.payload.kind}</code></KeyValueRow>
             <PayloadFields payload={request.payload} />
-            <dt>Summary</dt><dd>{request.summary}</dd>
-            <dt>Requested by</dt><dd>{request.requesterName} <span className="muted small">({request.requesterId})</span></dd>
-            <dt>Created</dt><dd>{formatDate(request.createdAt)}</dd>
+            <KeyValueRow label="Summary">{request.summary}</KeyValueRow>
+            <KeyValueRow label="Requested by">{request.requesterName} <span className="muted small">({request.requesterId})</span></KeyValueRow>
+            <KeyValueRow label="Created">{formatDate(request.createdAt)}</KeyValueRow>
           </KeyValueList>
         </Card>
 
         <Card>
-          <h3>Decision</h3>
+          <CardTitle>Decision</CardTitle>
           <KeyValueList>
-            <dt>State</dt><dd><DecisionBadge state={request.decision} /></dd>
-            <dt>Decided by</dt><dd>{request.decidedById ?? <span className="muted">—</span>}</dd>
-            <dt>Decided at</dt><dd>{formatDate(request.decidedAt)}</dd>
+            <KeyValueRow label="State"><DecisionBadge state={request.decision} /></KeyValueRow>
+            <KeyValueRow label="Decided by">{request.decidedById ?? <span className="muted">—</span>}</KeyValueRow>
+            <KeyValueRow label="Decided at">{formatDate(request.decidedAt)}</KeyValueRow>
           </KeyValueList>
 
           {conflict ? (
@@ -162,12 +162,12 @@ export function RequestDetail({ actor, requestId, onNavigate }: Props) {
             </p>
           ) : null}
 
-          <h3>Execution</h3>
+          <CardTitle>Execution</CardTitle>
           <KeyValueList>
-            <dt>State</dt><dd><ExecutionBadge state={request.execution} /></dd>
-            <dt>Attempts</dt><dd>{exec ? exec.attempts : <span className="muted">—</span>}</dd>
-            <dt>Provider ref</dt><dd>{exec?.providerRef ? <code>{exec.providerRef}</code> : <span className="muted">—</span>}</dd>
-            <dt>Last error</dt><dd>{exec?.lastError ? <span className="danger-text">{exec.lastError}</span> : <span className="muted">—</span>}</dd>
+            <KeyValueRow label="State"><ExecutionBadge state={request.execution} /></KeyValueRow>
+            <KeyValueRow label="Attempts">{exec ? exec.attempts : <span className="muted">—</span>}</KeyValueRow>
+            <KeyValueRow label="Provider ref">{exec?.providerRef ? <code>{exec.providerRef}</code> : <span className="muted">—</span>}</KeyValueRow>
+            <KeyValueRow label="Last error">{exec?.lastError ? <span className="danger-text">{exec.lastError}</span> : <span className="muted">—</span>}</KeyValueRow>
           </KeyValueList>
           {request.execution === "NEEDS_REVIEW" ? (
             <Alert tone="warn">

@@ -5,7 +5,7 @@ import { formatDate } from "../format";
 import { DecisionBadge, ExecutionBadge } from "./Badges";
 import { ErrorBox } from "./ErrorBox";
 import { requestHref } from "../hrefs";
-import { Button, ButtonGroup, EmptyState, Loading, SectionHead, Table } from "@tools/ui";
+import { AppIcon, Button, ButtonGroup, EmptyState, Icons, Loading, PageHeader, Table } from "@tools/ui";
 
 type Filter = "pending" | "decided" | "all";
 type Props = { actor: Actor; onNavigate: (hash: string) => void };
@@ -36,7 +36,11 @@ export function ApprovalsQueue({ actor, onNavigate }: Props) {
 
   return (
     <section>
-      <SectionHead heading="Approvals queue">
+      <PageHeader
+        icon={<AppIcon color="amber" size="lg"><Icons.CheckCircledIcon /></AppIcon>}
+        title="Approvals queue"
+        description="Every governed request across tools. Approve or reject only what someone else requested."
+        actions={
         <ButtonGroup aria-label="Filter">
           {(["pending", "decided", "all"] as Filter[]).map((f) => (
             <Button key={f} variant="secondary" active={filter === f} onClick={() => setFilter(f)}>
@@ -45,37 +49,38 @@ export function ApprovalsQueue({ actor, onNavigate }: Props) {
           ))}
           <Button variant="secondary" onClick={() => void load()}>Refresh</Button>
         </ButtonGroup>
-      </SectionHead>
+        }
+      />
       {error ? <ErrorBox error={error} prefix="Could not load approvals:" /> : null}
       {requests === null && !error ? <Loading>Loading approvals…</Loading> : null}
       {requests && visible.length === 0 ? <EmptyState>No {filter === "all" ? "" : filter + " "}requests.</EmptyState> : null}
       {visible.length > 0 ? (
-        <Table clickable>
-          <thead>
-            <tr>
-              <th>Request</th>
-              <th>Kind</th>
-              <th>Summary</th>
-              <th>Requester</th>
-              <th>Decision</th>
-              <th>Execution</th>
-              <th>Created</th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table.Root clickable>
+          <Table.Head>
+            <Table.Row>
+              <Table.Th>Request</Table.Th>
+              <Table.Th>Kind</Table.Th>
+              <Table.Th>Summary</Table.Th>
+              <Table.Th>Requester</Table.Th>
+              <Table.Th>Decision</Table.Th>
+              <Table.Th>Execution</Table.Th>
+              <Table.Th>Created</Table.Th>
+            </Table.Row>
+          </Table.Head>
+          <Table.Body>
             {visible.map((r) => (
-              <tr key={r.id} tabIndex={0} onClick={() => onNavigate(requestHref(r.id))} onKeyDown={(e) => { if (e.key === "Enter") onNavigate(requestHref(r.id)); }}>
-                <td><a href={requestHref(r.id)} onClick={(e) => e.preventDefault()}>{r.id}</a></td>
-                <td><code>{r.kind}</code></td>
-                <td>{r.summary}</td>
-                <td>{r.requesterName} <span className="muted small">({r.requesterId})</span></td>
-                <td><DecisionBadge state={r.decision} /></td>
-                <td><ExecutionBadge state={r.execution} /></td>
-                <td>{formatDate(r.createdAt)}</td>
-              </tr>
+              <Table.Row key={r.id} tabIndex={0} onClick={() => onNavigate(requestHref(r.id))} onKeyDown={(e) => { if (e.key === "Enter") onNavigate(requestHref(r.id)); }}>
+                <Table.Td><a href={requestHref(r.id)} onClick={(e) => e.preventDefault()}>{r.id}</a></Table.Td>
+                <Table.Td><code>{r.kind}</code></Table.Td>
+                <Table.Td>{r.summary}</Table.Td>
+                <Table.Td>{r.requesterName} <span className="muted small">({r.requesterId})</span></Table.Td>
+                <Table.Td><DecisionBadge state={r.decision} /></Table.Td>
+                <Table.Td><ExecutionBadge state={r.execution} /></Table.Td>
+                <Table.Td>{formatDate(r.createdAt)}</Table.Td>
+              </Table.Row>
             ))}
-          </tbody>
-        </Table>
+          </Table.Body>
+        </Table.Root>
       ) : null}
     </section>
   );
