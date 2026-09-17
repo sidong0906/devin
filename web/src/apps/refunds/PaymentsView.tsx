@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Actor, PaymentDto } from "@tools/contracts";
-import { api } from "../api/client";
-import { formatDate, formatMoney } from "../format";
-import { ErrorBox } from "./ErrorBox";
-import { requestHref } from "../routes";
+import { api } from "../../api/client";
+import { formatDate, formatMoney } from "../../format";
+import { ErrorBox } from "../../components/ErrorBox";
+import { requestHref } from "../../hrefs";
 
 type Props = { actor: Actor; onNavigate: (hash: string) => void };
 

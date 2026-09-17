@@ -12,6 +12,6 @@
     "migrate": "tsx src/migrate.ts",
     "seed": "tsx src/seed.ts"
   },
-  "dependencies": { "@tools/contracts": "workspace:*", "@tools/server-core": "workspace:*", "@tools/refunds-server": "workspace:*", "@tools/flags-server": "workspace:*", "fastify": "catalog:", "@fastify/cookie": "catalog:", "kysely": "catalog:", "pg": "catalog:", "zod": "catalog:" },
+  "dependencies": { "@tools/contracts": "workspace:*", "@tools/server-core": "workspace:*", "@tools/app-manifest": "workspace:*", "fastify": "catalog:", "@fastify/cookie": "catalog:", "kysely": "catalog:", "pg": "catalog:", "zod": "catalog:" },
   "devDependencies": { "typescript": "catalog:", "vitest": "catalog:", "@types/node": "catalog:", "@types/pg": "catalog:", "tsx": "catalog:" }
 }

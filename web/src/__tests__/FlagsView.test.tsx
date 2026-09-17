@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { DEMO_USERS, SEED_FLAGS } from "@tools/contracts";
 import type { FlagDto } from "@tools/contracts";
-import { FlagsView } from "../components/FlagsView";
+import { FlagsView } from "../apps/flags/FlagsView";
 import { apiError, json, mockFetch } from "./helpers";
 
 afterEach(cleanup);

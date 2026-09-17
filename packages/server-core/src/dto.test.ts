@@ -1,19 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { ApprovalRequestDto, AuditEventDto, PaymentDto, SEED_PAYMENTS } from "@tools/contracts";
-import { toApprovalRequestDto, toAuditEventDto, toPaymentDto } from "./dto.js";
+import { ApprovalRequestDto, AuditEventDto, SEED_PAYMENTS } from "@tools/contracts";
+import { registerRequestSummary, requestSummary, toApprovalRequestDto, toAuditEventDto } from "./dto.js";
 import { buildSummary } from "./audit.js";
 
 const seed = SEED_PAYMENTS[0];
 
 describe("dto mapping", () => {
-  it("masks the payment email", () => {
-    const dto = toPaymentDto(
-      { id: seed.id, amount_minor: seed.amountMinor, currency: "USD", customer_email: seed.customerEmail, captured_at: new Date(seed.capturedAt) },
-      null,
-    );
-    expect(PaymentDto.parse(dto)).toEqual(dto);
-    expect(dto.customerEmailMasked).toBe("j***@example.com");
-    expect(JSON.stringify(dto)).not.toContain(seed.customerEmail);
+  it("falls back to a kind-only summary until an app registers one", () => {
+    const payload = { kind: "flag_change" as const, flagKey: "ui.new_dashboard", expectedVersion: 0, newValue: true };
+    expect(requestSummary(payload)).toBe("kind=flag_change");
+    registerRequestSummary("flag_change", (p) => buildSummary({ kind: p.kind, reason: `${p.flagKey}->${p.newValue}` }));
+    expect(requestSummary(payload)).toBe("kind=flag_change reason=ui.new_dashboard->true");
   });
 
   it("maps request rows with and without jobs", () => {

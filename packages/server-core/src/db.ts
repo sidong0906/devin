@@ -1,14 +1,6 @@
 import { Kysely, PostgresDialect, type Generated, type Selectable, type Transaction } from "kysely";
 import pg from "pg";
 
-export interface PaymentsTable {
-  id: string;
-  amount_minor: number;
-  currency: string;
-  customer_email: string;
-  captured_at: Date;
-}
-
 export interface ApprovalRequestsTable {
   id: string;
   kind: string;
@@ -46,10 +38,9 @@ export interface ExecutionJobsTable {
   updated_at: Generated<Date>;
 }
 export type ExecutionJobRow = Selectable<ExecutionJobsTable>;
-export type PaymentRow = Selectable<PaymentsTable>;
 
+/** Platform-owned tables. Apps widen the handle for their own tables with `db.withTables<...>()`. */
 export interface Database {
-  payments: PaymentsTable;
   approval_requests: ApprovalRequestsTable;
   audit_events: AuditEventsTable;
   execution_jobs: ExecutionJobsTable;
@@ -60,6 +51,11 @@ export type Tx = Transaction<Database>;
 
 export function createDb(connectionString: string, max = 10): Db {
   return new Kysely<Database>({ dialect: new PostgresDialect({ pool: new pg.Pool({ connectionString, max }) }) });
+}
+
+/** Elevated (migrator-role) handle for seed and demo reset. Raw `sql` only; app tables are not typed here. */
+export function createAdminDb(connectionString: string, max = 2): Kysely<Record<string, never>> {
+  return new Kysely<Record<string, never>>({ dialect: new PostgresDialect({ pool: new pg.Pool({ connectionString, max }) }) });
 }
 
 export function withTx<T>(db: Db, fn: (tx: Tx) => Promise<T>): Promise<T> {

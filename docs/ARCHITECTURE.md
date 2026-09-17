@@ -15,8 +15,9 @@ flowchart TB
     subgraph API["Trust boundary: services/api (Fastify)"]
       ID["Identity resolver<br/>demo auth, refuses to boot in production"]
       ID --> DISPATCH["Action dispatcher<br/>deny by default, one permission per action"]
-      DISPATCH --> REF["apps/refunds/server<br/>refunds.request · refund review policy"]
-      DISPATCH --> FLG["apps/flags/server<br/>flags.propose · flag_change review policy"]
+      DISPATCH --> MAN["packages/app-manifest<br/>APPS: register · routes · seed · executors"]
+      MAN --> REF["apps/refunds/server<br/>refunds.request · refund review policy · refund executor"]
+      MAN --> FLG["apps/flags/server<br/>flags.propose · flag_change review policy"]
       DISPATCH --> DECIDE["packages/server-core approvals<br/>decideRequest: identity check before role check"]
     end
 
@@ -32,7 +33,7 @@ flowchart TB
     DECIDE --> TX
 
     subgraph SIDE["External side-effect boundary"]
-      WORKER["services/worker<br/>lease job, call PSP, record outcome, retry with same idempotency key"]
+      WORKER["services/worker<br/>lease job, dispatch to the app executor for job.kind, record outcome, retry with same idempotency key"]
       SIM["services/payment-simulator<br/>separate process, can drop responses"]
     end
     JOBS --> WORKER -->|"HTTP + Idempotency-Key"| SIM
@@ -82,8 +83,8 @@ Legend: solid boxes exist in the tree and are covered by `tests/contracts`. Dash
 3. Dispatcher (deny by default, one permission per action): enforced in `packages/server-core/actions.ts`, tested by G2 and F1.
 4. Identity before role in `decideRequest`: tested by G3 and F2.
 5. CODEOWNERS + CI: convention until branch protection is turned on in GitHub settings, which the coordinator cannot do from inside the repository.
-6. Prompt-level ownership ("build only in `apps/<name>`"): weakest; the flags session legitimately touched `services/api` wiring. See the ledger.
+6. Prompt-level ownership ("build only in `apps/<name>`"): weakest; the flags session legitimately touched `services/api` wiring. See the ledger. Since the structure pass, app registration is one line in `packages/app-manifest`, so a new app no longer edits `services/api` or `services/worker`.
 
 ## Planned, not built
 
-OIDC against the company IdP; real PSP adapter and reconciliation job; partial refunds and multi-currency; denied-decision audit rows for `SELF_APPROVAL` and kind-permission failures; row-level scoping beyond "one request per payment"; retention, log shipping, SIEM; deployment pipeline; the KYC queue (`docs/KYC_SCOPE.md`); a plugin manifest so new apps register without editing `services/api`.
+OIDC against the company IdP; real PSP adapter and reconciliation job; partial refunds and multi-currency; denied-decision audit rows for `SELF_APPROVAL` and kind-permission failures; row-level scoping beyond "one request per payment"; retention, log shipping, SIEM; deployment pipeline; the KYC queue (`docs/KYC_SCOPE.md`).

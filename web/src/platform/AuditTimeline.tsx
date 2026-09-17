@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { Actor, AuditEventDto } from "@tools/contracts";
 import { api } from "../api/client";
 import { formatDate } from "../format";
-import { ErrorBox } from "./ErrorBox";
+import { ErrorBox } from "../components/ErrorBox";
 
 type Props = { actor: Actor; requestId: string; refreshKey: number };
 
