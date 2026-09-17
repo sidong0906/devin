@@ -4,6 +4,7 @@ import {
   ApprovalResponse,
   ApprovalsResponse,
   AuditResponse,
+  FlagsResponse,
   MeResponse,
   PaymentsResponse,
 } from "@tools/contracts";
@@ -80,6 +81,9 @@ export const api = {
   decide: (requestId: string, decision: "approve" | "reject") =>
     request(ActionAccepted, "POST", "/api/actions/approvals.decide", { requestId, decision }),
   audit: (requestId: string) => request(AuditResponse, "GET", `/api/audit?requestId=${encodeURIComponent(requestId)}`),
+  flags: () => request(FlagsResponse, "GET", "/api/flags"),
+  proposeFlag: (flagKey: string, expectedVersion: number, newValue: boolean) =>
+    request(ActionAccepted, "POST", "/api/actions/flags.propose", { flagKey, expectedVersion, newValue }),
 };
 
 export function describeError(e: unknown): { code: string; message: string; requestId: string | null; status: number } {

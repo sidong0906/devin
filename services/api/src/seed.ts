@@ -1,5 +1,5 @@
 import pg from "pg";
-import { SEED_PAYMENTS } from "@tools/contracts";
+import { SEED_FLAGS, SEED_PAYMENTS } from "@tools/contracts";
 
 export async function seed(connectionString: string): Promise<void> {
   const client = new pg.Client({ connectionString });
@@ -14,6 +14,14 @@ export async function seed(connectionString: string): Promise<void> {
         [p.id, p.amountMinor, p.currency, p.customerEmail, p.capturedAt],
       );
     }
+    for (const f of SEED_FLAGS) {
+      await client.query(
+        `INSERT INTO feature_flags (key, value, version, updated_at, updated_by_id)
+         VALUES ($1, $2, 0, now(), NULL)
+         ON CONFLICT (key) DO NOTHING`,
+        [f.key, f.value],
+      );
+    }
   } finally {
     await client.end();
   }
@@ -25,7 +33,7 @@ if (!url) {
   process.exit(1);
 }
 seed(url)
-  .then(() => console.info(`seeded ${SEED_PAYMENTS.length} payments`))
+  .then(() => console.info(`seeded ${SEED_PAYMENTS.length} payments, ${SEED_FLAGS.length} flags`))
   .catch((err) => {
     console.error("seed failed", err instanceof Error ? err.message : err);
     process.exit(1);

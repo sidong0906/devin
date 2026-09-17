@@ -18,6 +18,8 @@ import {
   type Db,
 } from "@tools/server-core";
 import { registerRefundRoutes, registerRefunds } from "@tools/refunds-server";
+import { registerFlagRoutes, registerFlags } from "@tools/flags-server";
+import { SEED_FLAGS } from "@tools/contracts";
 
 export interface ApiEnv {
   DATABASE_URL: string;
@@ -34,6 +36,7 @@ function registerDomain(): void {
   registered = true;
   registerApprovalsDecideAction();
   registerRefunds();
+  registerFlags();
 }
 
 export function buildApp(env: ApiEnv): { app: FastifyInstance; db: Db } {
@@ -53,6 +56,7 @@ export function buildApp(env: ApiEnv): { app: FastifyInstance; db: Db } {
   app.get("/api/me", async (request) => resolveActor(request));
 
   registerRefundRoutes(app, db);
+  registerFlagRoutes(app, db);
   registerActionRoutes(app, { db, demoMode, webOrigin: env.WEB_ORIGIN });
 
   app.get("/api/approvals", async (request) => {
@@ -83,6 +87,9 @@ export function buildApp(env: ApiEnv): { app: FastifyInstance; db: Db } {
     app.post("/api/demo/reset", async (request) => {
       assertSameOrigin(request, env.WEB_ORIGIN);
       await sql`TRUNCATE execution_jobs, approval_requests, audit_events RESTART IDENTITY`.execute(adminDb);
+      for (const f of SEED_FLAGS) {
+        await sql`UPDATE feature_flags SET value = ${f.value}, version = 0, updated_at = now(), updated_by_id = NULL WHERE key = ${f.key}`.execute(adminDb);
+      }
       return { ok: true };
     });
     app.addHook("onClose", async () => {

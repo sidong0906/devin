@@ -96,6 +96,31 @@ importers:
         specifier: 'catalog:'
         version: 3.2.7(@types/node@22.20.3)(jsdom@30.1.0)(tsx@4.23.13)
 
+  apps/flags/server:
+    dependencies:
+      '@tools/contracts':
+        specifier: workspace:*
+        version: link:../../../packages/contracts
+      '@tools/server-core':
+        specifier: workspace:*
+        version: link:../../../packages/server-core
+      kysely:
+        specifier: 'catalog:'
+        version: 0.29.6
+      zod:
+        specifier: 'catalog:'
+        version: 4.1.13
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.3
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 3.2.7(@types/node@22.20.3)(jsdom@30.1.0)(tsx@4.23.13)
+
   apps/refunds/server:
     dependencies:
       '@tools/contracts':
@@ -182,6 +207,9 @@ importers:
       '@tools/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      '@tools/flags-server':
+        specifier: workspace:*
+        version: link:../../apps/flags/server
       '@tools/refunds-server':
         specifier: workspace:*
         version: link:../../apps/refunds/server

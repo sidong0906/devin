@@ -5,6 +5,7 @@ import { IdentityBar } from "./components/IdentityBar";
 import { PaymentsView } from "./components/PaymentsView";
 import { ApprovalsQueue } from "./components/ApprovalsQueue";
 import { RequestDetail } from "./components/RequestDetail";
+import { FlagsView } from "./components/FlagsView";
 import { useHashRoute } from "./routes";
 
 export function App() {
@@ -50,7 +51,7 @@ export function App() {
     }
   }
 
-  const tab = (name: "payments" | "approvals", label: string, hash: string) => (
+  const tab = (name: "payments" | "approvals" | "flags", label: string, hash: string) => (
     <a href={hash} className={route.name === name || (name === "approvals" && route.name === "request") ? "tab active" : "tab"} onClick={(e) => { e.preventDefault(); navigate(hash); }}>
       {label}
     </a>
@@ -62,6 +63,7 @@ export function App() {
       <nav className="tabs">
         {tab("payments", "Payments / Request refund", "#/payments")}
         {tab("approvals", "Approvals queue", "#/approvals")}
+        {tab("flags", "Feature flags", "#/flags")}
       </nav>
       <main>
         {!actor ? (
@@ -70,6 +72,8 @@ export function App() {
           <PaymentsView actor={actor} onNavigate={navigate} />
         ) : route.name === "approvals" ? (
           <ApprovalsQueue actor={actor} onNavigate={navigate} />
+        ) : route.name === "flags" ? (
+          <FlagsView actor={actor} onNavigate={navigate} />
         ) : (
           <RequestDetail actor={actor} requestId={route.id} onNavigate={navigate} />
         )}

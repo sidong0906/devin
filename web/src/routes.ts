@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 
-export type Route = { name: "payments" } | { name: "approvals" } | { name: "request"; id: string };
+export type Route = { name: "payments" } | { name: "approvals" } | { name: "flags" } | { name: "request"; id: string };
 
 export function parseHash(hash: string): Route {
   const h = hash.replace(/^#/, "");
   const m = /^\/approvals\/([^/]+)$/.exec(h);
   if (m && m[1]) return { name: "request", id: decodeURIComponent(m[1]) };
   if (h === "/approvals") return { name: "approvals" };
+  if (h === "/flags") return { name: "flags" };
   return { name: "payments" };
 }
 
