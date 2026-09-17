@@ -1,6 +1,7 @@
 # @tools/web — internal-tools shell
 
-React + Vite shell that hosts every internal tool behind one identity bar and one approvals queue.
+React + Vite shell that hosts every internal tool behind one sidebar, one identity bar, one Overview
+dashboard and one approvals queue.
 Every API response is parsed with the zod schemas from `@tools/contracts`; a response that does not
 match the frozen contract is surfaced as an error, never rendered.
 
