@@ -34,12 +34,12 @@ src/
 
 ## Why Radix Themes
 
-Chosen over custom-built primitives (PR #4 did that; this replaces them) and over the other common
+Chosen over custom-built primitives (the first version of this package) and over the other common
 options:
 
 | Option | Why not / why |
 |---|---|
-| Custom CSS + components | Every accessibility detail (focus rings, contrast, keyboard handling) is our bug to find. ~300 lines of CSS to maintain per tool family. Fine for a demo, not for 13 tools. |
+| Custom CSS + components | Every accessibility detail (focus rings, contrast, keyboard handling) is our bug to find. ~300 lines of CSS to maintain per tool family. Fine for a demo, not for a dozen tools. |
 | Tailwind-only | A utility layer, not a component library; still hand-writing Table/Select/Callout semantics. |
 | MUI / Ant / Chakra | Full-featured, but heavy runtime theming, opinionated look that is hard to make "ours", and larger bundles. |
 | shadcn/ui | Copies component source into the repo (Radix primitives + Tailwind). Good fit for a product; for a platform it means we own every copied file. |
