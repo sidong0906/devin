@@ -65,27 +65,27 @@ export function PaymentsView({ actor, onNavigate }: Props) {
       ) : null}
       {actionError ? <ErrorBox error={actionError.error} prefix={`Request for ${actionError.paymentId} rejected by server:`} /> : null}
       {payments && payments.length > 0 ? (
-        <Table>
-          <thead>
-            <tr>
-              <th>Payment</th>
-              <th className="num">Amount</th>
-              <th>Customer (masked)</th>
-              <th>Captured</th>
-              <th>Refund request</th>
-              {canRequest ? <th></th> : null}
-            </tr>
-          </thead>
-          <tbody>
+        <Table.Root>
+          <Table.Head>
+            <Table.Row>
+              <Table.Th>Payment</Table.Th>
+              <Table.Th className="num">Amount</Table.Th>
+              <Table.Th>Customer (masked)</Table.Th>
+              <Table.Th>Captured</Table.Th>
+              <Table.Th>Refund request</Table.Th>
+              {canRequest ? <Table.Th></Table.Th> : null}
+            </Table.Row>
+          </Table.Head>
+          <Table.Body>
             {payments.map((p) => {
               const exists = p.refundRequestId !== null;
               return (
-                <tr key={p.id}>
-                  <td><code>{p.id}</code></td>
-                  <td className="num">{formatMoney(p.amountMinor, p.currency)}</td>
-                  <td>{p.customerEmailMasked}</td>
-                  <td>{formatDate(p.capturedAt)}</td>
-                  <td>
+                <Table.Row key={p.id}>
+                  <Table.Td><code>{p.id}</code></Table.Td>
+                  <Table.Td className="num">{formatMoney(p.amountMinor, p.currency)}</Table.Td>
+                  <Table.Td>{p.customerEmailMasked}</Table.Td>
+                  <Table.Td>{formatDate(p.capturedAt)}</Table.Td>
+                  <Table.Td>
                     {p.refundRequestId ? (
                       <a href={requestHref(p.refundRequestId)} onClick={(e) => { e.preventDefault(); onNavigate(requestHref(p.refundRequestId ?? "")); }}>
                         {p.refundRequestId}
@@ -93,9 +93,9 @@ export function PaymentsView({ actor, onNavigate }: Props) {
                     ) : (
                       <span className="muted">none</span>
                     )}
-                  </td>
+                  </Table.Td>
                   {canRequest ? (
-                    <td className="actions">
+                    <Table.Td className="actions">
                       <Button
                         disabled={exists || submitting !== null}
                         title={exists ? "A refund request already exists for this payment (one request per payment)" : undefined}
@@ -104,13 +104,13 @@ export function PaymentsView({ actor, onNavigate }: Props) {
                         {submitting === p.id ? "Requesting…" : "Request full refund"}
                       </Button>
                       {exists ? <div className="muted small">Already requested</div> : null}
-                    </td>
+                    </Table.Td>
                   ) : null}
-                </tr>
+                </Table.Row>
               );
             })}
-          </tbody>
-        </Table>
+          </Table.Body>
+        </Table.Root>
       ) : null}
     </section>
   );

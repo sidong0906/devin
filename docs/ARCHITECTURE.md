@@ -55,11 +55,28 @@ Legend: solid boxes exist in the tree and are covered by `tests/contracts`. Dash
 | Refunds app | `apps/refunds/server` | coordinator (docs/prompts/01) | Devin, backend session | coordinator on merge |
 | Process hosts, migrations, seed | `services/*`, `db/` | coordinator | Devin, backend session; flags session added wiring | coordinator on merge |
 | Web shell | `web/` | coordinator (docs/prompts/02) | Devin, UI session; flags session added Flags screen | coordinator on merge |
-| Design system (tokens, primitives, tones) | `packages/ui` | coordinator | Devin, design-system pass | coordinator on merge |
+| Design system (Radix Themes + semantic tones, tokens, primitives) | `packages/ui` | coordinator | Devin, design-system passes (PR #4, then Radix rebase) | coordinator on merge |
 | Flags app | `apps/flags/server`, `db/migrations/0002_flags.sql` | coordinator (docs/prompts/03, the playbook) | Devin, flags session | coordinator on merge |
 | CI, CODEOWNERS | `.github/` | coordinator | coordinator | human |
 
 "Coordinator" is the parent Devin session acting on the human's plan. The human wrote the plan and approved the repository; every line of code in this repository was written by a Devin session.
+
+## Frontend layering
+
+```
+Radix Themes (npm)      accessible components, colour/type/space scales, focus states; pinned in the pnpm catalog
+      ↓
+packages/ui             UiProvider (one fixed theme), --ui-* tokens, Tone → colour, thin wrappers; no domain imports
+      ↓
+web/src/platform        shell screens + contract-bound components (which tone does ExecutionState X get, ErrorBox)
+      ↓
+web/src/apps/<name>     one folder per tool: screen, payload fields, WebApp registration
+```
+
+The third-party library is a dependency of `packages/ui` only; `web/` never imports it. That keeps the
+status vocabulary (an unresolved outcome must never look like success) enforceable in one place and
+lets the library be swapped or upgraded without touching a tool. Details and the choice rationale:
+`packages/ui/README.md`.
 
 ## Request lifecycle (refund)
 

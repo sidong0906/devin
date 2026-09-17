@@ -1,14 +1,14 @@
 @import "@tools/ui/styles.css";
 
-/* Shell layout and the two domain-specific visuals (demo banner, audit timeline). Everything else comes from @tools/ui. */
+/* Shell layout and the two shell-specific visuals (demo banner, audit timeline). Everything else comes from @tools/ui (Radix Themes + tokens). */
 .app { max-width: 1200px; margin: 0 auto; padding: 0 20px 40px; }
 
 .identity-bar { position: sticky; top: 0; z-index: 2; background: var(--ui-surface); border-bottom: 1px solid var(--ui-border); margin: 0 -20px; padding: 10px 20px; }
 .identity-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .identity-select { display: flex; align-items: center; gap: 6px; color: var(--ui-fg-muted); }
 .identity-actor { display: flex; align-items: center; gap: var(--ui-space-2); flex-wrap: wrap; margin-left: auto; }
-.demo-banner { background: #2b2f3a; color: #ffd166; font-weight: 700; font-size: var(--ui-text-sm); letter-spacing: 0.06em; padding: var(--ui-space-1) var(--ui-space-2); border-radius: var(--ui-radius-sm); }
-.fixture-badge { background: var(--ui-warn-bg); color: var(--ui-warn); border: 1px solid var(--ui-warn); font-weight: 700; font-size: var(--ui-text-sm); letter-spacing: 0.06em; padding: 3px var(--ui-space-2); border-radius: var(--ui-radius-sm); }
+.demo-banner { background: var(--gray-12); color: var(--amber-9); font-weight: 700; font-size: var(--ui-text-sm); letter-spacing: 0.06em; padding: var(--ui-space-1) var(--ui-space-2); border-radius: var(--ui-radius-sm); }
+.fixture-badge { background: var(--ui-warn-bg); color: var(--ui-warn); border: 1px solid var(--ui-warn-border); font-weight: 700; font-size: var(--ui-text-sm); letter-spacing: 0.06em; padding: 3px var(--ui-space-2); border-radius: var(--ui-radius-sm); }
 
 .timeline { list-style: none; padding: 0; margin: 0; }
 .timeline-item { padding: var(--ui-space-2) 0 var(--ui-space-2) 14px; border-left: 3px solid var(--ui-border); margin-left: var(--ui-space-1); }

@@ -87,31 +87,31 @@ export function FlagsView({ actor, onNavigate }: Props) {
       ) : null}
       {actionError && !stale && !duplicate ? <ErrorBox error={actionError.error} prefix={`Proposal for ${actionError.key} rejected by server:`} /> : null}
       {flags && flags.length > 0 ? (
-        <Table>
-          <thead>
-            <tr>
-              <th>Flag</th>
-              <th>Value</th>
-              <th className="num">Version</th>
-              <th>Updated by</th>
-              <th>Updated at</th>
-              <th>Pending change</th>
-              {canPropose ? <th></th> : null}
-            </tr>
-          </thead>
-          <tbody>
+        <Table.Root>
+          <Table.Head>
+            <Table.Row>
+              <Table.Th>Flag</Table.Th>
+              <Table.Th>Value</Table.Th>
+              <Table.Th className="num">Version</Table.Th>
+              <Table.Th>Updated by</Table.Th>
+              <Table.Th>Updated at</Table.Th>
+              <Table.Th>Pending change</Table.Th>
+              {canPropose ? <Table.Th></Table.Th> : null}
+            </Table.Row>
+          </Table.Head>
+          <Table.Body>
             {flags.map((f) => {
               const pending = f.pendingRequestId !== null;
               return (
-                <tr key={f.key}>
-                  <td><code>{f.key}</code></td>
-                  <td><Badge tone={f.value ? "ok" : "neutral"}>{f.value ? "on" : "off"}</Badge></td>
-                  <td className="num">v{f.version}</td>
-                  <td>{f.updatedById ?? <span className="muted">seed</span>}</td>
-                  <td>{formatDate(f.updatedAt)}</td>
-                  <td>{f.pendingRequestId ? link(f.pendingRequestId) : <span className="muted">none</span>}</td>
+                <Table.Row key={f.key}>
+                  <Table.Td><code>{f.key}</code></Table.Td>
+                  <Table.Td><Badge tone={f.value ? "ok" : "neutral"}>{f.value ? "on" : "off"}</Badge></Table.Td>
+                  <Table.Td className="num">v{f.version}</Table.Td>
+                  <Table.Td>{f.updatedById ?? <span className="muted">seed</span>}</Table.Td>
+                  <Table.Td>{formatDate(f.updatedAt)}</Table.Td>
+                  <Table.Td>{f.pendingRequestId ? link(f.pendingRequestId) : <span className="muted">none</span>}</Table.Td>
                   {canPropose ? (
-                    <td className="actions">
+                    <Table.Td className="actions">
                       <Button
                         disabled={pending || submitting !== null}
                         title={pending ? "A change is already pending for this flag version" : `Propose setting ${f.key} to ${!f.value} (expects v${f.version})`}
@@ -120,13 +120,13 @@ export function FlagsView({ actor, onNavigate }: Props) {
                         {submitting === f.key ? "Proposing…" : `Propose ${f.value ? "off" : "on"}`}
                       </Button>
                       {pending ? <div className="muted small">Awaiting review</div> : null}
-                    </td>
+                    </Table.Td>
                   ) : null}
-                </tr>
+                </Table.Row>
               );
             })}
-          </tbody>
-        </Table>
+          </Table.Body>
+        </Table.Root>
       ) : null}
     </section>
   );

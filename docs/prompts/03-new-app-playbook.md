@@ -20,7 +20,7 @@ Do NOT touch `packages/server-core/**`, `packages/contracts/**`, `services/**`, 
 (Run #1 predates the manifest and had to edit `services/api/src/app.ts` and `seed.ts` directly; that finding is recorded in the ledger and is what the manifest fixed.) If the shared platform (`packages/server-core`) is missing something you need, STOP and report it — do not patch it. That finding is a first-class result of this experiment.
 
 ## Reference implementation to copy the shape of
-`apps/refunds/server/src/` (`actions.ts` action + review policy, `routes.ts`, `db.ts` app-owned table types, `seed.ts`, `index.ts` app module), `db/migrations/0001_init.sql` (grants pattern), `web/src/apps/refunds/` (`PaymentsView.tsx` screen shape and error rendering, `RefundPayloadFields.tsx`, `index.tsx` WebApp) and `web/src/platform/RequestDetail.tsx`. Build screens from `@tools/ui` primitives (see `packages/ui/README.md`: tones, load/empty/error pattern); do not add CSS or hard-coded colours in app folders.
+`apps/refunds/server/src/` (`actions.ts` action + review policy, `routes.ts`, `db.ts` app-owned table types, `seed.ts`, `index.ts` app module), `db/migrations/0001_init.sql` (grants pattern), `web/src/apps/refunds/` (`PaymentsView.tsx` screen shape and error rendering, `RefundPayloadFields.tsx`, `index.tsx` WebApp) and `web/src/platform/RequestDetail.tsx`. Build screens from `@tools/ui` primitives (see `packages/ui/README.md`: tones, load/empty/error pattern, `Table.Root/Row/Td`, `KeyValueRow`); do not add CSS, hard-coded colours, or `@radix-ui/themes` imports in app folders.
 
 ## Build
 1. `apps/flags/server` package `@tools/flags-server` (same tsconfig/package layout as `@tools/refunds-server`).

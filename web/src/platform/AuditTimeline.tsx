@@ -4,7 +4,7 @@ import { api } from "../api/client";
 import { formatDate } from "../format";
 import { ErrorBox } from "./ErrorBox";
 import { OutcomeBadge } from "./Badges";
-import { Card, EmptyState, Loading } from "@tools/ui";
+import { Card, CardTitle, EmptyState, Loading } from "@tools/ui";
 
 type Props = { actor: Actor; requestId: string; refreshKey: number };
 
@@ -32,7 +32,7 @@ export function AuditTimeline({ actor, requestId, refreshKey }: Props) {
 
   return (
     <Card>
-      <h3>Audit timeline</h3>
+      <CardTitle>Audit timeline</CardTitle>
       {!canRead ? (
         <p className="muted">
           <code>audit.read</code> required — switch to an identity with that permission to view the append-only event log.

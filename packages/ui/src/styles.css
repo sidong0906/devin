@@ -1,2 +1,3 @@
+@import "@radix-ui/themes/styles.css";
 @import "./tokens.css";
-@import "./primitives.css";
+@import "./overrides.css";

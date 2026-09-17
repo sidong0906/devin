@@ -21,9 +21,11 @@ src/
   styles.css    imports @tools/ui/styles.css, then only shell-specific rules (identity bar, timeline)
 ```
 
-Visual building blocks (tokens, Button, Badge, Alert, Card, Table, Tabs, ...) come from
-[`packages/ui`](../packages/ui/README.md). Screens compose those primitives and should contain
-almost no `className`; a screen that needs a new visual asks the design system for it.
+Visual building blocks (theme, tokens, Button, Badge, Alert, Card, Table, Tabs, ...) come from
+[`packages/ui`](../packages/ui/README.md), which is built on Radix Themes. `main.tsx` mounts `UiProvider`
+once; screens compose the primitives and should contain almost no `className`. Do not import
+`@radix-ui/themes` here: a screen that needs a new visual asks the design system for it (or uses the
+small escape hatch `@tools/ui` re-exports: `Box`, `Flex`, `Text`, ...).
 
 A new tool adds a folder under `src/apps/<name>/` exporting a `WebApp` and one line in `src/apps/index.ts`.
 Nothing under `platform/` needs to change: the queue renders any `RequestKind`, and the detail page

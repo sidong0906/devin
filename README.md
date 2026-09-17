@@ -12,7 +12,7 @@ Detailed walkthrough: `docs/PROTOTYPE_GUIDE.md`. Decision and pilot: `docs/KEY_D
 | Refunds (`apps/refunds`) | Agent requests a full refund, a different reviewer approves, worker executes against a payment simulator, auditor sees the masked trail | Built end to end. 16 gates. |
 | Feature flags (`apps/flags`) | Propose a flag change, independent approval publishes it with version conflict detection | Built from the playbook in one 6-minute Devin session, zero edits to the platform. 8 gates. |
 | KYC review queue | Case queue with assignment and vendor checks | Scoped, not built. Estimate in `docs/KYC_SCOPE.md`. |
-| Shared UI (`web/`, `packages/ui`) | Identity picker, approvals queue, request detail, audit timeline; every app plugs into the same screens and builds from one design system (tokens, primitives, status tones) | Built. |
+| Shared UI (`web/`, `packages/ui`) | Identity picker, approvals queue, request detail, audit timeline; every app plugs into the same screens and builds from one design system: Radix Themes underneath, a project-owned layer of five status tones and thin primitives on top (`packages/ui/README.md`) | Built. |
 
 Build cost measured: 26 Devin minutes across three sessions plus about 45 human minutes of specification, gates, integration, and review (`docs/BUILD_LEDGER.md`). Auth is a synthetic stub and the payment provider is a simulator; both are swap points, not shortcuts hidden in the code.
 

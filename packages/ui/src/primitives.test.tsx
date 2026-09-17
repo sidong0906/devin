@@ -1,11 +1,11 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render } from "@testing-library/react";
-import { Alert, Badge, Button, TONES, Table, TabLink } from "./index";
+import { Alert, Badge, Button, KeyValueList, KeyValueRow, TONES, TONE_COLOR, Table, TabLink, Tabs, UiProvider } from "./index";
 
 afterEach(cleanup);
 
 describe("tones", () => {
-  it("every tone maps to a badge and alert class", () => {
+  it("every tone maps to a badge/alert class and a Radix colour", () => {
     for (const tone of TONES) {
       const { container, unmount } = render(
         <>
@@ -13,10 +13,13 @@ describe("tones", () => {
           <Alert tone={tone}>a</Alert>
         </>,
       );
-      expect(container.querySelector(`.badge.badge-${tone}`)).not.toBeNull();
-      expect(container.querySelector(`.alert.alert-${tone}`)).not.toBeNull();
+      const badge = container.querySelector(`.badge.badge-${tone}`);
+      expect(badge).not.toBeNull();
+      expect(badge?.getAttribute("data-accent-color")).toBe(TONE_COLOR[tone]);
+      expect(container.querySelector(`.alert.alert-${tone}`)?.getAttribute("data-accent-color")).toBe(TONE_COLOR[tone]);
       unmount();
     }
+    expect(new Set(Object.values(TONE_COLOR)).size).toBe(TONES.length);
   });
 
   it("alerts announce warn/danger immediately and everything else politely", () => {
@@ -45,24 +48,30 @@ describe("Button", () => {
     const [plain, filter, danger] = [...container.querySelectorAll("button")];
     expect(plain?.getAttribute("type")).toBe("button");
     expect(plain?.hasAttribute("aria-pressed")).toBe(false);
-    expect(filter?.className).toBe("btn btn-secondary active");
+    expect(filter?.className).toContain("btn btn-secondary active");
     expect(filter?.getAttribute("aria-pressed")).toBe("true");
-    expect(danger?.className).toBe("btn btn-danger");
+    expect(danger?.className).toContain("btn btn-danger");
+    expect(danger?.getAttribute("data-accent-color")).toBe("red");
   });
 });
 
-describe("Table and TabLink", () => {
+describe("Table, Tabs, KeyValue", () => {
   it("expose the clickable and current-page affordances", () => {
     const { container } = render(
-      <>
-        <Table clickable><tbody><tr><td>x</td></tr></tbody></Table>
-        <TabLink href="#/a" active>A</TabLink>
-        <TabLink href="#/b" active={false}>B</TabLink>
-      </>,
+      <UiProvider>
+        <Table.Root clickable><Table.Body><Table.Row><Table.Td>x</Table.Td></Table.Row></Table.Body></Table.Root>
+        <Tabs>
+          <TabLink href="#/a" active>A</TabLink>
+          <TabLink href="#/b" active={false}>B</TabLink>
+        </Tabs>
+        <KeyValueList><KeyValueRow label="Kind">refund</KeyValueRow></KeyValueList>
+      </UiProvider>,
     );
-    expect(container.querySelector("table")?.className).toBe("table clickable");
-    const [a, b] = [...container.querySelectorAll("a")];
+    expect(container.querySelector(".table.clickable table")).not.toBeNull();
+    const [a, b] = [...container.querySelectorAll("a.tab")];
     expect(a?.getAttribute("aria-current")).toBe("page");
     expect(b?.hasAttribute("aria-current")).toBe(false);
+    expect(container.querySelector("dl.kv dt")?.textContent).toBe("Kind");
+    expect(container.querySelector("dl.kv dd")?.textContent).toBe("refund");
   });
 });

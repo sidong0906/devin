@@ -19,6 +19,7 @@ Status vocabulary: **enforced** (code path exists and a test fails if it regress
 | Connectors (about 1,500) | one hand-specified HTTP adapter (worker to simulator) | stub | G6 | | every integration is code; budget 40 engineer-hours per app as an assumption |
 | Dataverse (managed data, relationships, delegation limits) | PostgreSQL with least-privilege roles and column grants | different, not weaker for Postgres-facing apps | G8 column-grant test | grants for `tools_app` | backups, retention, PITR |
 | Compliance attestations (SOC, PCI for the platform) | none | not replicable | | | the client carries its own evidence; this repo produces evidence (audit rows, PR history), not attestations |
+| Consistent, accessible UI across apps (Power Apps controls / themes) | `packages/ui` on Radix Themes: one `UiProvider` theme, five semantic status tones, thin primitives; app screens compose them and carry no CSS | enforced (tone mapping tested; a11y baseline inherited from Radix, not audited) | `packages/ui/src/primitives.test.tsx`, `web/src/__tests__/Badges.test.tsx` | any screen for a hard-coded colour or an `@radix-ui` import outside `packages/ui` | WCAG audit against real screens; dark mode if wanted (one `Theme` prop) |
 | Maker experience for non-engineers | none; every app needs an engineer and a spec | not replicable | | | this is the real thing you give up |
 | Mobile / offline runtime | none | not built | | | |
 | Environment admin, licensing, per-app analytics | none | not built | | | |

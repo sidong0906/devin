@@ -11,6 +11,15 @@ export type Tone = "ok" | "warn" | "danger" | "pending" | "neutral";
 
 export const TONES: readonly Tone[] = ["ok", "warn", "danger", "pending", "neutral"];
 
+/** Radix colour scale behind each tone. The only tone→colour mapping in the codebase. */
+export const TONE_COLOR = {
+  ok: "green",
+  warn: "amber",
+  danger: "red",
+  pending: "indigo",
+  neutral: "gray",
+} as const satisfies Record<Tone, string>;
+
 export function cx(...parts: Array<string | false | null | undefined>): string {
   return parts.filter(Boolean).join(" ");
 }

@@ -1,16 +1,17 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
+import { DataList } from "@radix-ui/themes";
 import { cx } from "../tone";
 
-/** Two-column label/value list. Compose with `<KV.Row>` or with raw `<dt>/<dd>` pairs. */
-export function KeyValueList({ className, ...rest }: HTMLAttributes<HTMLDListElement>) {
-  return <dl className={cx("kv", className)} {...rest} />;
+/** Label/value list. Children must be `<KeyValueRow>`s (apps' `PayloadFields` render these). */
+export function KeyValueList({ className, ...rest }: ComponentProps<typeof DataList.Root>) {
+  return <DataList.Root size="2" className={cx("kv", className)} {...rest} />;
 }
 
 export function KeyValueRow({ label, children }: { label: ReactNode; children: ReactNode }) {
   return (
-    <>
-      <dt>{label}</dt>
-      <dd>{children}</dd>
-    </>
+    <DataList.Item>
+      <DataList.Label minWidth="120px">{label}</DataList.Label>
+      <DataList.Value>{children}</DataList.Value>
+    </DataList.Item>
   );
 }

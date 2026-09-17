@@ -1,46 +1,34 @@
 /*
- * Design tokens. The only place raw values (hex, px) are allowed.
- * Everything else in the UI references these variables.
+ * Semantic tokens. Aliases over Radix Themes' scales (https://www.radix-ui.com/themes/docs/theme/color):
+ * step 3 = tinted background, step 7 = border, step 11 = readable text, step 12 = high-contrast text.
+ * The only file allowed to name a raw scale colour; everything else references --ui-*.
  */
-:root {
-  /* Text and surfaces */
-  --ui-fg: #1a1f2b;
-  --ui-fg-muted: #5b6474;
-  --ui-bg: #f7f8fa;
-  --ui-surface: #ffffff;
-  --ui-surface-raised: #f1f3f7;
-  --ui-surface-hover: #f4f7fd;
-  --ui-border: #d9dee7;
-  --ui-accent: #1f5fbf;
-  --ui-on-accent: #ffffff;
+.radix-themes {
+  --ui-fg: var(--gray-12);
+  --ui-fg-muted: var(--gray-11);
+  --ui-bg: var(--color-background);
+  --ui-surface: var(--color-panel-solid);
+  --ui-surface-raised: var(--gray-2);
+  --ui-surface-hover: var(--accent-2);
+  --ui-border: var(--gray-6);
+  --ui-accent: var(--accent-9);
 
-  /* Semantic tones. Each tone has a foreground, a background and a strong text colour for alerts.
-     ok      = confirmed success (only use when the server has confirmed the outcome)
-     warn    = unresolved / needs a human (never a success)
-     danger  = denied, rejected, failed
-     pending = in progress, waiting
-     neutral = informational, nothing happened */
-  --ui-ok: #1d7a46;        --ui-ok-bg: #e6f4ea;        --ui-ok-strong: #0f4a29;
-  --ui-warn: #8a5a00;      --ui-warn-bg: #fff4d6;      --ui-warn-strong: #4d3200;
-  --ui-danger: #a72626;    --ui-danger-bg: #fbe9e9;    --ui-danger-strong: #5a1414;
-  --ui-pending: #3b4f7a;   --ui-pending-bg: #e8edf7;   --ui-pending-strong: #24335a;
-  --ui-neutral: #5b6474;   --ui-neutral-bg: #eceff3;   --ui-neutral-strong: #1a1f2b;
+  /* Semantic tones, one Radix scale each. Same names as the `Tone` type.
+     ok = green, warn = amber, danger = red, pending = indigo, neutral = gray. */
+  --ui-ok: var(--green-11);       --ui-ok-bg: var(--green-3);       --ui-ok-border: var(--green-7);
+  --ui-warn: var(--amber-11);     --ui-warn-bg: var(--amber-3);     --ui-warn-border: var(--amber-8);
+  --ui-danger: var(--red-11);     --ui-danger-bg: var(--red-3);     --ui-danger-border: var(--red-7);
+  --ui-pending: var(--indigo-11); --ui-pending-bg: var(--indigo-3); --ui-pending-border: var(--indigo-7);
+  --ui-neutral: var(--gray-11);   --ui-neutral-bg: var(--gray-3);   --ui-neutral-border: var(--gray-7);
 
-  /* Type */
-  --ui-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --ui-font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
-  --ui-text-sm: 12px;
-  --ui-text-md: 14px;
-  --ui-text-lg: 18px;
-  --ui-leading: 1.4;
-
-  /* Space and shape (4px grid) */
-  --ui-space-1: 4px;
-  --ui-space-2: 8px;
-  --ui-space-3: 12px;
-  --ui-space-4: 16px;
-  --ui-space-6: 24px;
-  --ui-radius-sm: 4px;
-  --ui-radius-md: 6px;
-  --ui-radius-pill: 999px;
+  --ui-font-mono: var(--code-font-family);
+  --ui-text-sm: var(--font-size-1);
+  --ui-text-md: var(--font-size-2);
+  --ui-space-1: var(--space-1);
+  --ui-space-2: var(--space-2);
+  --ui-space-3: var(--space-3);
+  --ui-space-4: var(--space-4);
+  --ui-space-6: var(--space-6);
+  --ui-radius-sm: var(--radius-2);
+  --ui-radius-md: var(--radius-3);
 }
