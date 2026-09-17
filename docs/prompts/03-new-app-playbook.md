@@ -5,7 +5,7 @@ This is the reusable prompt for "the next app". Fill the `<<PARAMS>>` block, han
 ## <<PARAMS>>
 - APP: `flags` — feature-flag change control (propose → independent approve → publish a versioned boolean).
 - Branch: `devin/app-flags`.
-- Base: branch `devin/1789619700-governed-refunds-prototype`, commit `<<BASE_SHA>>`.
+- Base: branch `devin/1789619700-governed-refunds-prototype`, commit `e8a8ca97b0d8e2cc6eae1ba29734ab453179e589`.
 - Frozen contract already contains everything you need: `FlagChangePayload`, `FlagProposeBody`, `FlagDto`, `FlagsResponse`, `SEED_FLAGS`, `RequestKind "flag_change"`, permissions `flags.propose` / `flags.review`, action `flags.propose`, error `STALE_VERSION`, routes `GET /api/flags` and `POST /api/actions/flags.propose`.
 - Acceptance gate (already written, must pass): `tests/contracts/src/flags.acceptance.test.ts`. Read it first; it is the spec.
 
