@@ -40,6 +40,7 @@ jobs:
           DEMO_AUTH: "true"
           SESSION_SECRET: ci-only
           DATABASE_URL: postgres://tools_app:tools_app@localhost:5432/tools
+          MIGRATION_DATABASE_URL: postgres://tools_migrator:tools_migrator@localhost:5432/tools
           PAYMENT_SIMULATOR_URL: http://localhost:4100
   boundary:
     # Guard: PRs authored by Devin app sessions must not touch shared controls without a human co-review.
