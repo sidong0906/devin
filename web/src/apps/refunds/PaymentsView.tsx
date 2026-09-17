@@ -4,7 +4,9 @@ import { api } from "../../api/client";
 import { formatDate, formatMoney } from "../../format";
 import { ErrorBox } from "../../platform/ErrorBox";
 import { requestHref } from "../../hrefs";
-import { Alert, Button, EmptyState, Loading, SectionHead, Table } from "@tools/ui";
+import { refundsMeta } from "./meta";
+import { RefundsSummary } from "./RefundsSummary";
+import { Alert, AppIcon, Button, ChartCard, EmptyState, Loading, PageHeader, Table } from "@tools/ui";
 
 type Props = { actor: Actor; onNavigate: (hash: string) => void };
 
@@ -49,12 +51,18 @@ export function PaymentsView({ actor, onNavigate }: Props) {
 
   return (
     <section>
-      <SectionHead heading="Payments">
-        <Button variant="secondary" onClick={() => void load()} disabled={payments === null && !loadError}>
-          Refresh
-        </Button>
-      </SectionHead>
+      <PageHeader
+        icon={<AppIcon color={refundsMeta.color} size="lg">{refundsMeta.icon}</AppIcon>}
+        title={refundsMeta.label}
+        description={refundsMeta.description}
+        actions={
+          <Button variant="secondary" onClick={() => void load()} disabled={payments === null && !loadError}>
+            Refresh
+          </Button>
+        }
+      />
       {!canRequest ? <p className="muted">You can view payments but cannot request refunds (requires <code>refunds.request</code>).</p> : null}
+      {payments && payments.length > 0 ? <RefundsSummary payments={payments} /> : null}
       {loadError ? <ErrorBox error={loadError} prefix="Could not load payments:" /> : null}
       {payments === null && !loadError ? <Loading>Loading payments…</Loading> : null}
       {payments && payments.length === 0 ? <EmptyState>No payments seeded.</EmptyState> : null}
@@ -65,6 +73,7 @@ export function PaymentsView({ actor, onNavigate }: Props) {
       ) : null}
       {actionError ? <ErrorBox error={actionError.error} prefix={`Request for ${actionError.paymentId} rejected by server:`} /> : null}
       {payments && payments.length > 0 ? (
+        <ChartCard title="Payments" description="Seeded captures. One full-refund request per payment; the request, not this row, carries the outcome.">
         <Table.Root>
           <Table.Head>
             <Table.Row>
@@ -111,6 +120,7 @@ export function PaymentsView({ actor, onNavigate }: Props) {
             })}
           </Table.Body>
         </Table.Root>
+        </ChartCard>
       ) : null}
     </section>
   );

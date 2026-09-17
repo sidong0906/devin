@@ -102,11 +102,41 @@ colour; the web test `Badges.test.tsx` asserts that only `SUCCEEDED` gets the `o
 | `Tabs`, `TabLink` | `TabNav.Root/Link` | `active` | anchor-based; the host owns navigation; `active` sets `aria-current="page"` |
 | `Select` | — (native `<select>`) | — | kept native so it works in plain forms and jsdom; styled with tokens |
 
+### Dashboard layer (shell, widgets, charts)
+
+Internal-tool users expect the Power Apps shape: a left rail of tools, a header, KPI tiles, charts, then
+the table. These primitives give every tool that shape from real API data; the tables stay the record.
+
+| Component | Built on | Props | Notes |
+|---|---|---|---|
+| `AppShell` | CSS grid | `sidebar`, `header`, `children` | 232px sticky rail + sticky header + grey canvas; collapses to one column under 900px |
+| `Sidebar`, `NavSection`, `NavItem` | anchors | `brand`, `footer`; `active`, `icon`, `meta` | `NavItem` sets `aria-current="page"`; the host owns routing |
+| `AppIcon` | `span` | `color` (tone or Radix scale), `size` | coloured tile behind an icon; a tool's identity colour, separate from status tones |
+| `PageHeader` | `Flex` + `Heading` | `icon`, `title`, `description`, `actions` | replaces `SectionHead` at the top of a tool screen |
+| `StatTile`, `StatGrid` | `Box`, `Grid` | `label`, `value`, `hint`, `tone`, `icon` | KPI card with a tone-coloured top border; grid auto-fits ~190px columns |
+| `Meter` | `Progress` soft | `label`, `value`, `max`, `tone`, `caption` | labelled progress bar for "x of y reached this stage" |
+| `ChartCard` | `Box` | `title`, `description`, `actions` | the frame every chart or table sits in; use `.dashboard-grid` + `.span-N` (12 columns) to lay cards out |
+| `DonutChart` | Recharts `PieChart` | `data: Slice[]`, `centerLabel`, `height` | total in the middle; renders `ChartEmpty` when everything is zero |
+| `BarsChart` | Recharts `BarChart` | `data: Slice[]`, `layout`, `tone` | vertical or horizontal; per-bar tone/colour |
+| `TrendChart` | Recharts `AreaChart` | `data: TrendPoint[]`, `series: Series[]` | stacked areas, one per series |
+| `Icons` | `@radix-ui/react-icons` | — | curated re-export; add to `icons.ts`, do not import the package elsewhere |
+
+Chart colours come from the same place as everything else: a `Slice`/`Series` takes either a `tone`
+(status: `ok`/`warn`/`danger`/`pending`/`neutral`) or a `color` from `CHART_SERIES` (categories such as
+tools). Fills resolve to `var(--<scale>-9)`, so charts follow the theme and stay legible against step-1/2
+backgrounds. `colorProps(app.color)` converts a tool's identity colour into the right prop. Every chart
+has `role="img"` and an `aria-label` that states the numbers, so the picture is never the only copy.
+
+What a dashboard may show: counts and shares derived from contract DTOs the screen already fetched
+(`web/src/platform/metrics.ts` for the approvals list). What it may not do: fetch a second, unaudited
+source, or colour an unresolved state green.
+
 Text utilities (plain classes): `.muted`, `.small`, `.mono`, `.danger-text`.
 
 **Escape hatch.** `index.ts` re-exports `Box, Flex, Grid, Text, Heading, Code, Separator, Link` from
 Radix for one-off layout. Anything with a colour or a status goes through a primitive above so the
-tone rules hold. Do not import `@radix-ui/themes` from `web/`; the boundary is this package.
+tone rules hold. Do not import `@radix-ui/themes`, `@radix-ui/react-icons` or `recharts` from `web/`;
+the boundary is this package.
 
 ## Patterns
 
@@ -136,8 +166,8 @@ via `WebApp.PayloadFields` and render `KeyValueRow`s.
 
 Inherited from Radix: visible focus rings, colour steps chosen for contrast (step 11 text on step 3
 background), keyboard handling in `TabNav`. Added here: `Alert` roles, `Button` `aria-pressed`,
-`TabLink` `aria-current`, the warn border. Status is never colour-only: every badge has text, and
-`title` carries the long explanation.
+`TabLink`/`NavItem` `aria-current`, the warn border, chart `aria-label`s. Status is never colour-only:
+every badge has text, every tile has a label, and `title` carries the long explanation.
 
 ## Adding or changing a primitive
 
@@ -153,5 +183,5 @@ If a tool needs something twice, it belongs here. If it needs it once, use the e
 
 `packages/ui` is CODEOWNERS-protected like the other shared packages. Devin sessions building a new tool
 compose from it and may propose additions, but the shared vocabulary (tones, primitives, the theme) changes
-only with a human review, the same rule as `packages/contracts`. The Radix version is pinned in
-`pnpm-workspace.yaml`'s catalog so all packages upgrade together.
+only with a human review, the same rule as `packages/contracts`. Radix Themes, Radix Icons and Recharts
+are pinned in `pnpm-workspace.yaml`'s catalog so all packages upgrade together.

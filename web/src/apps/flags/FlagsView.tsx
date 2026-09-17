@@ -4,7 +4,9 @@ import { ApiClientError, api } from "../../api/client";
 import { formatDate } from "../../format";
 import { ErrorBox } from "../../platform/ErrorBox";
 import { requestHref } from "../../hrefs";
-import { Alert, Badge, Button, EmptyState, Loading, SectionHead, Table } from "@tools/ui";
+import { flagsMeta } from "./meta";
+import { FlagsSummary } from "./FlagsSummary";
+import { Alert, AppIcon, Badge, Button, ChartCard, EmptyState, Loading, PageHeader, Table } from "@tools/ui";
 
 type Props = { actor: Actor; onNavigate: (hash: string) => void };
 
@@ -60,12 +62,18 @@ export function FlagsView({ actor, onNavigate }: Props) {
 
   return (
     <section>
-      <SectionHead heading="Feature flags">
-        <Button variant="secondary" onClick={() => void load()} disabled={flags === null && !loadError}>
-          Refresh
-        </Button>
-      </SectionHead>
+      <PageHeader
+        icon={<AppIcon color={flagsMeta.color} size="lg">{flagsMeta.icon}</AppIcon>}
+        title={flagsMeta.label}
+        description={flagsMeta.description}
+        actions={
+          <Button variant="secondary" onClick={() => void load()} disabled={flags === null && !loadError}>
+            Refresh
+          </Button>
+        }
+      />
       {!canPropose ? <p className="muted">You can view flags but cannot propose changes (requires <code>flags.propose</code>).</p> : null}
+      {flags && flags.length > 0 ? <FlagsSummary flags={flags} /> : null}
       {loadError ? <ErrorBox error={loadError} prefix="Could not load flags:" /> : null}
       {flags === null && !loadError ? <Loading>Loading flags…</Loading> : null}
       {flags && flags.length === 0 ? <EmptyState>No flags seeded.</EmptyState> : null}
@@ -87,6 +95,7 @@ export function FlagsView({ actor, onNavigate }: Props) {
       ) : null}
       {actionError && !stale && !duplicate ? <ErrorBox error={actionError.error} prefix={`Proposal for ${actionError.key} rejected by server:`} /> : null}
       {flags && flags.length > 0 ? (
+        <ChartCard title="Flags" description="Published values. Proposing flips the value and pins the version you saw; a reviewer publishes it.">
         <Table.Root>
           <Table.Head>
             <Table.Row>
@@ -127,6 +136,7 @@ export function FlagsView({ actor, onNavigate }: Props) {
             })}
           </Table.Body>
         </Table.Root>
+        </ChartCard>
       ) : null}
     </section>
   );

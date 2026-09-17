@@ -29,6 +29,8 @@
     "@types/node": "catalog:"
   },
   "dependencies": {
-    "@radix-ui/themes": "catalog:"
+    "@radix-ui/react-icons": "catalog:",
+    "@radix-ui/themes": "catalog:",
+    "recharts": "catalog:"
   }
 }

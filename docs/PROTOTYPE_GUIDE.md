@@ -34,7 +34,7 @@ It is not a Power Apps clone. It is one real workflow (refunds) built end to end
 - Audit: `audit_events` is INSERT-only for the app role and commits in the same transaction as the state change. Append-only against application code, not tamper-proof against a DBA (G7, G8).
 - Execution: worker retries with the same idempotency key; a dropped simulator response yields one effect (G6). Two concurrent approvals yield one decision and one job (G5).
 - Masking: raw customer email never reaches DTOs, audit summaries, or the DB summary column (G8).
-- UI: one design system for every tool. Radix Themes provides components, colour scales and focus handling; `@tools/ui` fixes the theme and maps five semantic tones (`ok`, `warn`, `danger`, `pending`, `neutral`) onto it so a pending or unresolved state can never render as success. Tests assert the mapping (`packages/ui/src/primitives.test.tsx`, `web/src/__tests__/Badges.test.tsx`).
+- UI: one design system for every tool. Radix Themes provides components, colour scales and focus handling; `@tools/ui` fixes the theme and maps five semantic tones (`ok`, `warn`, `danger`, `pending`, `neutral`) onto it so a pending or unresolved state can never render as success. Tests assert the mapping (`packages/ui/src/primitives.test.tsx`, `web/src/__tests__/Badges.test.tsx`). On top sits a dashboard layer in the shape internal-tool users know from Power Apps: a sidebar of tools, an Overview with KPI tiles and charts (Recharts, coloured from the same tones and scales), and per-tool tiles above each table. Every number is derived in the browser from the same approvals/payments/flags DTOs the tables show (`web/src/platform/metrics.ts`), so there is no second analytics source to audit.
 
 ## Architecture
 

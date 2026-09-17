@@ -5,7 +5,7 @@ import { formatDate } from "../format";
 import { DecisionBadge, ExecutionBadge } from "./Badges";
 import { ErrorBox } from "./ErrorBox";
 import { requestHref } from "../hrefs";
-import { Button, ButtonGroup, EmptyState, Loading, SectionHead, Table } from "@tools/ui";
+import { AppIcon, Button, ButtonGroup, EmptyState, Icons, Loading, PageHeader, Table } from "@tools/ui";
 
 type Filter = "pending" | "decided" | "all";
 type Props = { actor: Actor; onNavigate: (hash: string) => void };
@@ -36,7 +36,11 @@ export function ApprovalsQueue({ actor, onNavigate }: Props) {
 
   return (
     <section>
-      <SectionHead heading="Approvals queue">
+      <PageHeader
+        icon={<AppIcon color="amber" size="lg"><Icons.CheckCircledIcon /></AppIcon>}
+        title="Approvals queue"
+        description="Every governed request across tools. Approve or reject only what someone else requested."
+        actions={
         <ButtonGroup aria-label="Filter">
           {(["pending", "decided", "all"] as Filter[]).map((f) => (
             <Button key={f} variant="secondary" active={filter === f} onClick={() => setFilter(f)}>
@@ -45,7 +49,8 @@ export function ApprovalsQueue({ actor, onNavigate }: Props) {
           ))}
           <Button variant="secondary" onClick={() => void load()}>Refresh</Button>
         </ButtonGroup>
-      </SectionHead>
+        }
+      />
       {error ? <ErrorBox error={error} prefix="Could not load approvals:" /> : null}
       {requests === null && !error ? <Loading>Loading approvals…</Loading> : null}
       {requests && visible.length === 0 ? <EmptyState>No {filter === "all" ? "" : filter + " "}requests.</EmptyState> : null}

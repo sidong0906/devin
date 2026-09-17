@@ -17,7 +17,7 @@ type Props = {
 export function IdentityBar({ actor, selected, busy, error, onSelect }: Props) {
   const [pending, setPending] = useState<DemoUserKey | "">(selected ?? "");
   return (
-    <header className="identity-bar">
+    <div className="identity-bar">
       <div className="identity-row">
         <span className="demo-banner">DEMO AUTH — synthetic identities</span>
         {USE_FIXTURES ? <span className="fixture-badge" title="Data served from in-memory fixtures, not the API">FIXTURE DATA</span> : null}
@@ -61,6 +61,6 @@ export function IdentityBar({ actor, selected, busy, error, onSelect }: Props) {
         </div>
       </div>
       {error ? <ErrorBox error={error} prefix="Sign-in failed:" /> : null}
-    </header>
+    </div>
   );
 }

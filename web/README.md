@@ -8,17 +8,18 @@ match the frozen contract is surfaced as an error, never rendered.
 
 ```text
 src/
-  platform/     shell screens shared by all tools (IdentityBar, ApprovalsQueue, RequestDetail, AuditTimeline)
-                plus the domain components that bind contract states to the design system
-                (Badges.tsx: ExecutionBadge/DecisionBadge/OutcomeBadge/PermissionChip; ErrorBox.tsx)
+  platform/     shell screens shared by all tools (IdentityBar, Overview dashboard, ApprovalsQueue,
+                RequestDetail, AuditTimeline), metrics.ts (pure aggregations over the approvals DTOs
+                that feed the tiles and charts), plus the domain components that bind contract states
+                to the design system (Badges.tsx: ExecutionBadge/DecisionBadge/OutcomeBadge/PermissionChip; ErrorBox.tsx)
   apps/
     index.ts    web-side app manifest (WEB_APPS); mirrors packages/app-manifest on the server
-    types.ts    WebApp: tab, main View, PayloadFields for the request detail, reviewPermission
-    refunds/    PaymentsView + RefundPayloadFields
-    flags/      FlagsView + FlagChangePayloadFields
+    types.ts    WebApp: tab, icon/colour/description, main View, PayloadFields for the request detail, reviewPermission
+    refunds/    meta (identity) + PaymentsView + RefundsSummary (tiles/charts) + RefundPayloadFields
+    flags/      meta (identity) + FlagsView + FlagsSummary (tiles/charts) + FlagChangePayloadFields
   api/          typed client (client.ts) and the in-memory fixture API (fixtures.ts)
-  routes.ts     hash router; app tabs come from WEB_APPS, approvals routes are fixed
-  styles.css    imports @tools/ui/styles.css, then only shell-specific rules (identity bar, timeline)
+  routes.ts     hash router; #/ is the Overview, app routes come from WEB_APPS, approvals routes are fixed
+  styles.css    imports @tools/ui/styles.css, then only shell-specific rules (demo banner, timeline)
 ```
 
 Visual building blocks (theme, tokens, Button, Badge, Alert, Card, Table, Tabs, ...) come from
@@ -28,7 +29,8 @@ once; screens compose the primitives and should contain almost no `className`. D
 small escape hatch `@tools/ui` re-exports: `Box`, `Flex`, `Text`, ...).
 
 A new tool adds a folder under `src/apps/<name>/` exporting a `WebApp` and one line in `src/apps/index.ts`.
-Nothing under `platform/` needs to change: the queue renders any `RequestKind`, and the detail page
+It appears in the sidebar with its icon and colour and in the Overview charts automatically. Nothing
+under `platform/` needs to change: the queue renders any `RequestKind`, and the detail page
 uses the app's `PayloadFields` (or a generic JSON fallback).
 
 ## Run against the live API (default)

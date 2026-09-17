@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import type { Actor, DemoUserKey } from "@tools/contracts";
 import { ApiClientError, api } from "./api/client";
 import { IdentityBar } from "./platform/IdentityBar";
 import { ApprovalsQueue } from "./platform/ApprovalsQueue";
 import { RequestDetail } from "./platform/RequestDetail";
+import { Overview } from "./platform/Overview";
 import { WEB_APPS } from "./apps";
-import { APPROVALS_HREF } from "./hrefs";
+import { APPROVALS_HREF, HOME_HREF } from "./hrefs";
 import { useHashRoute, type Route } from "./routes";
-import { EmptyState, TabLink, Tabs } from "@tools/ui";
+import { AppIcon, AppShell, EmptyState, Icons, NavItem, NavSection, Sidebar } from "@tools/ui";
 
 export function App() {
   const [actor, setActor] = useState<Actor | null>(null);
@@ -52,31 +53,45 @@ export function App() {
     }
   }
 
-  const tab = (active: boolean, label: string, hash: string) => (
-    <TabLink key={hash} href={hash} active={active} onClick={(e) => { e.preventDefault(); navigate(hash); }}>
+  const item = (active: boolean, label: string, hash: string, icon: ReactNode) => (
+    <NavItem key={hash} href={hash} active={active} icon={icon} onClick={(e) => { e.preventDefault(); navigate(hash); }}>
       {label}
-    </TabLink>
+    </NavItem>
+  );
+
+  const sidebar = (
+    <Sidebar
+      brand={
+        <>
+          <AppIcon color="pending"><Icons.LayersIcon /></AppIcon>
+          <span>Internal tools</span>
+        </>
+      }
+      footer="Every write goes through request → independent approval → audit."
+    >
+      <NavSection title="Home">
+        {item(route.name === "home", "Overview", HOME_HREF, <AppIcon color="pending" size="sm"><Icons.DashboardIcon /></AppIcon>)}
+        {item(route.name === "approvals" || route.name === "request", "Approvals queue", APPROVALS_HREF, <AppIcon color="amber" size="sm"><Icons.CheckCircledIcon /></AppIcon>)}
+      </NavSection>
+      <NavSection title="Tools">
+        {WEB_APPS.map((app) => item(route.name === "app" && route.app === app.name, app.tab.label, app.tab.hash, <AppIcon color={app.color} size="sm">{app.icon}</AppIcon>))}
+      </NavSection>
+    </Sidebar>
   );
 
   return (
-    <div className="app">
-      <IdentityBar actor={actor} selected={selected} busy={busy} error={authError} onSelect={(k) => void selectIdentity(k)} />
-      <Tabs>
-        {WEB_APPS.map((app) => tab(route.name === "app" && route.app === app.name, app.tab.label, app.tab.hash))}
-        {tab(route.name === "approvals" || route.name === "request", "Approvals queue", APPROVALS_HREF)}
-      </Tabs>
-      <main>
-        {!actor ? (
-          <EmptyState>{busy ? "Checking session…" : "Select a demo identity above to load data."}</EmptyState>
-        ) : (
-          <RouteView actor={actor} route={route} onNavigate={navigate} />
-        )}
-      </main>
-    </div>
+    <AppShell sidebar={sidebar} header={<IdentityBar actor={actor} selected={selected} busy={busy} error={authError} onSelect={(k) => void selectIdentity(k)} />}>
+      {!actor ? (
+        <EmptyState>{busy ? "Checking session…" : "Select a demo identity above to load data."}</EmptyState>
+      ) : (
+        <RouteView actor={actor} route={route} onNavigate={navigate} />
+      )}
+    </AppShell>
   );
 }
 
 function RouteView({ actor, route, onNavigate }: { actor: Actor; route: Route; onNavigate: (hash: string) => void }) {
+  if (route.name === "home") return <Overview actor={actor} onNavigate={onNavigate} />;
   if (route.name === "approvals") return <ApprovalsQueue actor={actor} onNavigate={onNavigate} />;
   if (route.name === "request") return <RequestDetail actor={actor} requestId={route.id} onNavigate={onNavigate} />;
   const app = WEB_APPS.find((a) => a.name === route.app);

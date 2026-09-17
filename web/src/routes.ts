@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
-import { WEB_APPS, appForHash } from "./apps";
+import { appForHash } from "./apps";
 
-export type Route = { name: "app"; app: string } | { name: "approvals" } | { name: "request"; id: string };
+export type Route = { name: "home" } | { name: "app"; app: string } | { name: "approvals" } | { name: "request"; id: string };
 
 export function parseHash(hash: string): Route {
   const h = hash.replace(/^#/, "");
   const m = /^\/approvals\/([^/]+)$/.exec(h);
   if (m && m[1]) return { name: "request", id: decodeURIComponent(m[1]) };
   if (h === "/approvals") return { name: "approvals" };
-  const app = appForHash(`#${h}`) ?? WEB_APPS[0];
-  if (!app) return { name: "approvals" };
-  return { name: "app", app: app.name };
+  const app = appForHash(`#${h}`);
+  return app ? { name: "app", app: app.name } : { name: "home" };
 }
 
 export { requestHref } from "./hrefs";
