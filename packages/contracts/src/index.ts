@@ -124,6 +124,24 @@ export const ApprovalRequestDto = z.object({
 });
 export type ApprovalRequestDto = z.infer<typeof ApprovalRequestDto>;
 
+/** Published feature flag. `version` is the optimistic-concurrency token proposals must name. */
+export const FlagDto = z.object({
+  key: z.string(),
+  value: z.boolean(),
+  version: z.number().int().nonnegative(),
+  updatedAt: z.string(),
+  updatedById: z.string().nullable(),
+  pendingRequestId: z.string().nullable(),
+});
+export type FlagDto = z.infer<typeof FlagDto>;
+export const FlagsResponse = z.object({ flags: z.array(FlagDto) });
+
+export const SEED_FLAGS = [
+  { key: "refunds.instant_small_amounts", value: false },
+  { key: "kyc.enhanced_review", value: true },
+  { key: "ui.new_dashboard", value: false },
+] as const;
+
 export const AuditEventDto = z.object({
   id: z.number().int(),
   at: z.string(),
