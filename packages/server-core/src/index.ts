@@ -1,4 +1,9 @@
 // OWNED BY: backend session.
-// Implement here: identity resolution (demo auth + prod guard), deny-by-default action dispatcher,
-// approval/decision service (maker-checker), audit writer, db client + transaction helper.
-export {};
+export * from "./db.js";
+export * from "./errors.js";
+export * from "./identity.js";
+export * from "./audit.js";
+export * from "./masking.js";
+export * from "./dto.js";
+export * from "./actions.js";
+export * from "./approvals.js";
