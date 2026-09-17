@@ -58,7 +58,7 @@ If Docker Hub rate-limits the image (HTTP 429, hit twice during this build): `do
 ## Run the tests
 
 ```bash
-pnpm check              # lint + typecheck + 33 unit tests, no services needed
+pnpm check              # lint + typecheck + 46 unit tests, no services needed
 pnpm test:acceptance    # 24 black-box gates against the running API, worker, simulator, DB
 ```
 

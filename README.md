@@ -29,6 +29,27 @@ Real SSO, real payment provider, deployment pipeline, DLP, retention and SIEM, d
 
 Rule that does not change: the authorization, audit, and approval layer is specified and reviewed by humans. Devin writes it and stamps apps on top of it; it never owns it.
 
+## Frontend
+
+The team is used to Power Apps, so the UI has that shape: a left rail of tools, a header with who you are, KPI tiles and charts, then the table that is the record. It was built in three passes, each a merged PR:
+
+| Pass | Decision | Why |
+|---|---|---|
+| Design system (`packages/ui`) | One package owns every visual building block; screens compose it and carry almost no CSS | A new tool should look right by default and be reviewable as behaviour, not styling |
+| Rebuilt on Radix Themes | Wrap a maintained, accessible library instead of hand-rolled components; ~300 lines of custom CSS became ~15 lines of overrides | Accessibility, keyboard handling and colour scales come for free; the project keeps only what is its own |
+| Dashboard layer | Sidebar shell, app identity colours, KPI tiles, Recharts charts, an Overview across tools and a summary strip per tool | Colourful, glanceable internal tooling the team already recognises |
+
+**What the project owns (and Radix does not):**
+
+- **Five status tones**, the only status vocabulary in the UI: `ok` green, `warn` amber, `danger` red, `pending` indigo, `neutral` gray. Rule: an unresolved outcome never looks like success. A refund waiting on the provider is `pending`; one that exhausted retries is `warn`; only a provider-confirmed success is `ok`.
+- **App identity colours** separate from status (Refunds teal, Feature flags violet) so a tool's colour never reads as a state.
+- **The `@tools/ui` boundary**: `web/` never imports Radix Themes, Radix Icons or Recharts directly. Swapping the library is a change to one package.
+- **Dashboards derive from the audited data**. Every tile and chart is a pure function over the same DTOs the tables show (`web/src/platform/metrics.ts`, unit-tested); there is no second, unaudited analytics source, and the tables stay authoritative.
+
+**Screens built:** Overview (awaiting approval, approved, rejected, executed, needs review; requests per day, decision outcomes, requests by tool, execution pipeline, throughput, recent requests), Refunds (captured volume, refunds requested, largest payment, coverage donut, payments table with request action), Feature flags (flags on, pending changes, publishes per flag, flags table with propose action), Approvals queue (maker-checker enforced in the UI and the API), Request detail with payload and audit timeline, identity picker with the permission chips of the acting user. Every chart carries an `aria-label` with its numbers; tests assert tone mapping, roles and the dashboard aggregations.
+
+**Adding a tool's UI:** a folder `web/src/apps/<name>/` with `meta.tsx` (label, icon, colour, description), a view, an optional summary strip and payload fields for the request detail, plus one line in `web/src/apps/index.ts`. The sidebar, Overview charts, approvals queue and detail page pick it up without edits. Building blocks and rules: `packages/ui/README.md`; layout of `web/`: `web/README.md`.
+
 ## Run it
 
 ```bash
@@ -37,7 +58,7 @@ pnpm install && cp .env.example .env
 set -a && source .env && set +a          # scripts read the shell env, not .env
 pnpm db:up && pnpm db:migrate && pnpm db:seed
 pnpm dev                                  # web :5173, API :4000, worker, simulator :4100
-pnpm check && pnpm test:acceptance        # lint, types, 33 unit tests, 24 gates
+pnpm check && pnpm test:acceptance        # lint, types, 46 unit tests, 24 gates
 ```
 
 Five-minute tour by role, evidence per session, and governance notes: `docs/PROTOTYPE_GUIDE.md`.
