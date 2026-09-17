@@ -3,6 +3,7 @@
 /packages/contracts/          @sidong0906
 /packages/server-core/        @sidong0906
 /packages/app-manifest/       @sidong0906
+/packages/ui/                 @sidong0906
 /services/api/                @sidong0906
 /services/worker/             @sidong0906
 /db/                          @sidong0906
@@ -12,7 +13,6 @@
 # Domain code is reviewed too; bad refund rules are dangerous even when the platform is untouched.
 /apps/refunds/                @sidong0906
 /apps/flags/                  @sidong0906
-# Shared web shell and primitives; app screens under /web/src/apps/ are reviewed like /apps/.
+# Shared web shell (domain components bound to the contract); app screens under /web/src/apps/ are reviewed like /apps/.
 /web/src/platform/            @sidong0906
-/web/src/components/          @sidong0906
 /web/src/apps/                @sidong0906

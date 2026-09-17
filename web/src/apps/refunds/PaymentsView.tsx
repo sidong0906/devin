@@ -2,8 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import type { Actor, PaymentDto } from "@tools/contracts";
 import { api } from "../../api/client";
 import { formatDate, formatMoney } from "../../format";
-import { ErrorBox } from "../../components/ErrorBox";
+import { ErrorBox } from "../../platform/ErrorBox";
 import { requestHref } from "../../hrefs";
+import { Alert, Button, EmptyState, Loading, SectionHead, Table } from "@tools/ui";
 
 type Props = { actor: Actor; onNavigate: (hash: string) => void };
 
@@ -48,24 +49,23 @@ export function PaymentsView({ actor, onNavigate }: Props) {
 
   return (
     <section>
-      <div className="section-head">
-        <h2>Payments</h2>
-        <button className="btn btn-secondary" onClick={() => void load()} disabled={payments === null && !loadError}>
+      <SectionHead heading="Payments">
+        <Button variant="secondary" onClick={() => void load()} disabled={payments === null && !loadError}>
           Refresh
-        </button>
-      </div>
+        </Button>
+      </SectionHead>
       {!canRequest ? <p className="muted">You can view payments but cannot request refunds (requires <code>refunds.request</code>).</p> : null}
       {loadError ? <ErrorBox error={loadError} prefix="Could not load payments:" /> : null}
-      {payments === null && !loadError ? <p className="muted">Loading payments…</p> : null}
-      {payments && payments.length === 0 ? <p className="empty">No payments seeded.</p> : null}
+      {payments === null && !loadError ? <Loading>Loading payments…</Loading> : null}
+      {payments && payments.length === 0 ? <EmptyState>No payments seeded.</EmptyState> : null}
       {success ? (
-        <div className="alert alert-ok" role="status">
+        <Alert tone="ok">
           Refund request <a href={requestHref(success.requestId)} onClick={(e) => { e.preventDefault(); onNavigate(requestHref(success.requestId)); }}>{success.requestId}</a> created for {success.paymentId}. It now awaits an independent reviewer.
-        </div>
+        </Alert>
       ) : null}
       {actionError ? <ErrorBox error={actionError.error} prefix={`Request for ${actionError.paymentId} rejected by server:`} /> : null}
       {payments && payments.length > 0 ? (
-        <table className="table">
+        <Table>
           <thead>
             <tr>
               <th>Payment</th>
@@ -96,14 +96,13 @@ export function PaymentsView({ actor, onNavigate }: Props) {
                   </td>
                   {canRequest ? (
                     <td className="actions">
-                      <button
-                        className="btn"
+                      <Button
                         disabled={exists || submitting !== null}
                         title={exists ? "A refund request already exists for this payment (one request per payment)" : undefined}
                         onClick={() => void requestRefund(p.id)}
                       >
                         {submitting === p.id ? "Requesting…" : "Request full refund"}
-                      </button>
+                      </Button>
                       {exists ? <div className="muted small">Already requested</div> : null}
                     </td>
                   ) : null}
@@ -111,7 +110,7 @@ export function PaymentsView({ actor, onNavigate }: Props) {
               );
             })}
           </tbody>
-        </table>
+        </Table>
       ) : null}
     </section>
   );

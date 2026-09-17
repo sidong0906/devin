@@ -7,6 +7,7 @@ import { RequestDetail } from "./platform/RequestDetail";
 import { WEB_APPS } from "./apps";
 import { APPROVALS_HREF } from "./hrefs";
 import { useHashRoute, type Route } from "./routes";
+import { EmptyState, TabLink, Tabs } from "@tools/ui";
 
 export function App() {
   const [actor, setActor] = useState<Actor | null>(null);
@@ -52,21 +53,21 @@ export function App() {
   }
 
   const tab = (active: boolean, label: string, hash: string) => (
-    <a key={hash} href={hash} className={active ? "tab active" : "tab"} onClick={(e) => { e.preventDefault(); navigate(hash); }}>
+    <TabLink key={hash} href={hash} active={active} onClick={(e) => { e.preventDefault(); navigate(hash); }}>
       {label}
-    </a>
+    </TabLink>
   );
 
   return (
     <div className="app">
       <IdentityBar actor={actor} selected={selected} busy={busy} error={authError} onSelect={(k) => void selectIdentity(k)} />
-      <nav className="tabs">
+      <Tabs>
         {WEB_APPS.map((app) => tab(route.name === "app" && route.app === app.name, app.tab.label, app.tab.hash))}
         {tab(route.name === "approvals" || route.name === "request", "Approvals queue", APPROVALS_HREF)}
-      </nav>
+      </Tabs>
       <main>
         {!actor ? (
-          <p className="empty">{busy ? "Checking session…" : "Select a demo identity above to load data."}</p>
+          <EmptyState>{busy ? "Checking session…" : "Select a demo identity above to load data."}</EmptyState>
         ) : (
           <RouteView actor={actor} route={route} onNavigate={navigate} />
         )}
@@ -79,6 +80,6 @@ function RouteView({ actor, route, onNavigate }: { actor: Actor; route: Route; o
   if (route.name === "approvals") return <ApprovalsQueue actor={actor} onNavigate={onNavigate} />;
   if (route.name === "request") return <RequestDetail actor={actor} requestId={route.id} onNavigate={onNavigate} />;
   const app = WEB_APPS.find((a) => a.name === route.app);
-  if (!app) return <p className="empty">Unknown app.</p>;
+  if (!app) return <EmptyState>Unknown app.</EmptyState>;
   return <app.View actor={actor} onNavigate={onNavigate} />;
 }

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { DEMO_USERS, DemoUserKey } from "@tools/contracts";
 import type { Actor } from "@tools/contracts";
-import { PermissionChip } from "../components/Badges";
-import { ErrorBox } from "../components/ErrorBox";
+import { PermissionChip } from "./Badges";
+import { ErrorBox } from "./ErrorBox";
 import { USE_FIXTURES } from "../api/client";
+import { ChipGroup, Select } from "@tools/ui";
 
 type Props = {
   actor: Actor | null;
@@ -22,7 +23,7 @@ export function IdentityBar({ actor, selected, busy, error, onSelect }: Props) {
         {USE_FIXTURES ? <span className="fixture-badge" title="Data served from in-memory fixtures, not the API">FIXTURE DATA</span> : null}
         <label className="identity-select">
           Act as
-          <select
+          <Select
             aria-label="Demo identity"
             value={pending}
             disabled={busy}
@@ -41,7 +42,7 @@ export function IdentityBar({ actor, selected, busy, error, onSelect }: Props) {
                 {DEMO_USERS[key].displayName}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <div className="identity-actor">
           {busy ? <span className="muted">Signing in…</span> : null}
@@ -49,11 +50,11 @@ export function IdentityBar({ actor, selected, busy, error, onSelect }: Props) {
             <>
               <strong data-testid="actor-name">{actor.displayName}</strong>
               <span className="muted">({actor.id})</span>
-              <span className="chips" data-testid="permission-chips">
+              <ChipGroup data-testid="permission-chips">
                 {actor.permissions.map((p) => (
                   <PermissionChip key={p} permission={p} />
                 ))}
-              </span>
+              </ChipGroup>
             </>
           ) : null}
           {!busy && !actor ? <span className="muted">No session — pick an identity to begin</span> : null}

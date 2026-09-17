@@ -2,8 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import type { Actor, FlagDto } from "@tools/contracts";
 import { ApiClientError, api } from "../../api/client";
 import { formatDate } from "../../format";
-import { ErrorBox } from "../../components/ErrorBox";
+import { ErrorBox } from "../../platform/ErrorBox";
 import { requestHref } from "../../hrefs";
+import { Alert, Badge, Button, EmptyState, Loading, SectionHead, Table } from "@tools/ui";
 
 type Props = { actor: Actor; onNavigate: (hash: string) => void };
 
@@ -59,35 +60,34 @@ export function FlagsView({ actor, onNavigate }: Props) {
 
   return (
     <section>
-      <div className="section-head">
-        <h2>Feature flags</h2>
-        <button className="btn btn-secondary" onClick={() => void load()} disabled={flags === null && !loadError}>
+      <SectionHead heading="Feature flags">
+        <Button variant="secondary" onClick={() => void load()} disabled={flags === null && !loadError}>
           Refresh
-        </button>
-      </div>
+        </Button>
+      </SectionHead>
       {!canPropose ? <p className="muted">You can view flags but cannot propose changes (requires <code>flags.propose</code>).</p> : null}
       {loadError ? <ErrorBox error={loadError} prefix="Could not load flags:" /> : null}
-      {flags === null && !loadError ? <p className="muted">Loading flags…</p> : null}
-      {flags && flags.length === 0 ? <p className="empty">No flags seeded.</p> : null}
+      {flags === null && !loadError ? <Loading>Loading flags…</Loading> : null}
+      {flags && flags.length === 0 ? <EmptyState>No flags seeded.</EmptyState> : null}
       {success ? (
-        <div className="alert alert-ok" role="status">
+        <Alert tone="ok">
           Change to <code>{success.key}</code> proposed as {link(success.requestId)}. It now awaits an independent reviewer; the flag stays unchanged until approved.
-        </div>
+        </Alert>
       ) : null}
       {stale ? (
-        <div className="alert alert-warn" role="alert" data-testid="stale-version">
+        <Alert tone="warn" data-testid="stale-version">
           <strong>Flag changed since you loaded it — refresh.</strong> The server rejected the proposal with <code>409 STALE_VERSION</code>: {stale.message}. The table below has been refreshed with the current version.
-        </div>
+        </Alert>
       ) : null}
       {duplicate ? (
-        <div className="alert alert-warn" role="alert" data-testid="duplicate-request">
+        <Alert tone="warn" data-testid="duplicate-request">
           <strong>A change is already pending for this flag version</strong> (<code>409 DUPLICATE_REQUEST</code>).{" "}
           {duplicatePending ? <>See pending request {link(duplicatePending)}.</> : duplicate.message}
-        </div>
+        </Alert>
       ) : null}
       {actionError && !stale && !duplicate ? <ErrorBox error={actionError.error} prefix={`Proposal for ${actionError.key} rejected by server:`} /> : null}
       {flags && flags.length > 0 ? (
-        <table className="table">
+        <Table>
           <thead>
             <tr>
               <th>Flag</th>
@@ -105,21 +105,20 @@ export function FlagsView({ actor, onNavigate }: Props) {
               return (
                 <tr key={f.key}>
                   <td><code>{f.key}</code></td>
-                  <td><span className={f.value ? "badge badge-ok" : "badge"}>{f.value ? "on" : "off"}</span></td>
+                  <td><Badge tone={f.value ? "ok" : "neutral"}>{f.value ? "on" : "off"}</Badge></td>
                   <td className="num">v{f.version}</td>
                   <td>{f.updatedById ?? <span className="muted">seed</span>}</td>
                   <td>{formatDate(f.updatedAt)}</td>
                   <td>{f.pendingRequestId ? link(f.pendingRequestId) : <span className="muted">none</span>}</td>
                   {canPropose ? (
                     <td className="actions">
-                      <button
-                        className="btn"
+                      <Button
                         disabled={pending || submitting !== null}
                         title={pending ? "A change is already pending for this flag version" : `Propose setting ${f.key} to ${!f.value} (expects v${f.version})`}
                         onClick={() => void propose(f)}
                       >
                         {submitting === f.key ? "Proposing…" : `Propose ${f.value ? "off" : "on"}`}
-                      </button>
+                      </Button>
                       {pending ? <div className="muted small">Awaiting review</div> : null}
                     </td>
                   ) : null}
@@ -127,7 +126,7 @@ export function FlagsView({ actor, onNavigate }: Props) {
               );
             })}
           </tbody>
-        </table>
+        </Table>
       ) : null}
     </section>
   );

@@ -62,7 +62,7 @@ describe("RequestDetail", () => {
     );
     render(<RequestDetail actor={DEMO_USERS.reviewer} requestId="req_0001" onNavigate={() => {}} />);
     await screen.findByText(/Needs manual review/);
-    expect(screen.queryByText(/Refund executed exactly once/)).toBeNull();
+    expect(screen.queryByText(/Executed exactly once/)).toBeNull();
     expect(screen.getByText("unresolved")).toBeTruthy();
   });
 });

@@ -55,6 +55,7 @@ Legend: solid boxes exist in the tree and are covered by `tests/contracts`. Dash
 | Refunds app | `apps/refunds/server` | coordinator (docs/prompts/01) | Devin, backend session | coordinator on merge |
 | Process hosts, migrations, seed | `services/*`, `db/` | coordinator | Devin, backend session; flags session added wiring | coordinator on merge |
 | Web shell | `web/` | coordinator (docs/prompts/02) | Devin, UI session; flags session added Flags screen | coordinator on merge |
+| Design system (tokens, primitives, tones) | `packages/ui` | coordinator | Devin, design-system pass | coordinator on merge |
 | Flags app | `apps/flags/server`, `db/migrations/0002_flags.sql` | coordinator (docs/prompts/03, the playbook) | Devin, flags session | coordinator on merge |
 | CI, CODEOWNERS | `.github/` | coordinator | coordinator | human |
 
