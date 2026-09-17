@@ -1,0 +1,9 @@
+{
+  "name": "@tools/acceptance",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "typecheck": "tsc --noEmit", "test": "vitest run", "build": "tsc --noEmit" },
+  "dependencies": { "@tools/contracts": "workspace:*", "pg": "catalog:", "zod": "catalog:" },
+  "devDependencies": { "typescript": "catalog:", "vitest": "catalog:", "@types/node": "catalog:", "@types/pg": "catalog:" }
+}

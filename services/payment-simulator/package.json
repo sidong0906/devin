@@ -1,0 +1,15 @@
+{
+  "name": "@tools/payment-simulator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "start": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "build": "tsc --noEmit"
+  },
+  "dependencies": { "@tools/contracts": "workspace:*", "@tools/server-core": "workspace:*", "fastify": "catalog:", "@fastify/cookie": "catalog:", "kysely": "catalog:", "pg": "catalog:", "zod": "catalog:" },
+  "devDependencies": { "typescript": "catalog:", "vitest": "catalog:", "@types/node": "catalog:", "@types/pg": "catalog:", "tsx": "catalog:" }
+}
