@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { AppError, type ApprovalRequestRow, type Tx } from "@tools/server-core";
-import { publishApprovedFlagChange } from "./index.js";
+import { publishApprovedFlagChange } from "./actions.js";
 
 function fakeTx(flag: { key: string; value: boolean; version: number }) {
   const updates: unknown[] = [];

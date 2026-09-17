@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { DEMO_USERS } from "@tools/contracts";
-import { RequestDetail } from "../components/RequestDetail";
+import { RequestDetail } from "../platform/RequestDetail";
 import { apiError, json, mockFetch, pendingRefund } from "./helpers";
 
 afterEach(cleanup);

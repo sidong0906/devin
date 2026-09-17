@@ -1,4 +1,3 @@
-// OWNED BY: backend session. Entry point for @tools/api.
 import { assertDemoAuthAllowed } from "@tools/server-core";
 import { buildApp } from "./app.js";
 

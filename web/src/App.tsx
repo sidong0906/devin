@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import type { Actor, DemoUserKey } from "@tools/contracts";
 import { ApiClientError, api } from "./api/client";
-import { IdentityBar } from "./components/IdentityBar";
-import { PaymentsView } from "./components/PaymentsView";
-import { ApprovalsQueue } from "./components/ApprovalsQueue";
-import { RequestDetail } from "./components/RequestDetail";
-import { FlagsView } from "./components/FlagsView";
-import { useHashRoute } from "./routes";
+import { IdentityBar } from "./platform/IdentityBar";
+import { ApprovalsQueue } from "./platform/ApprovalsQueue";
+import { RequestDetail } from "./platform/RequestDetail";
+import { WEB_APPS } from "./apps";
+import { APPROVALS_HREF } from "./hrefs";
+import { useHashRoute, type Route } from "./routes";
 
 export function App() {
   const [actor, setActor] = useState<Actor | null>(null);
@@ -51,8 +51,8 @@ export function App() {
     }
   }
 
-  const tab = (name: "payments" | "approvals" | "flags", label: string, hash: string) => (
-    <a href={hash} className={route.name === name || (name === "approvals" && route.name === "request") ? "tab active" : "tab"} onClick={(e) => { e.preventDefault(); navigate(hash); }}>
+  const tab = (active: boolean, label: string, hash: string) => (
+    <a key={hash} href={hash} className={active ? "tab active" : "tab"} onClick={(e) => { e.preventDefault(); navigate(hash); }}>
       {label}
     </a>
   );
@@ -61,23 +61,24 @@ export function App() {
     <div className="app">
       <IdentityBar actor={actor} selected={selected} busy={busy} error={authError} onSelect={(k) => void selectIdentity(k)} />
       <nav className="tabs">
-        {tab("payments", "Payments / Request refund", "#/payments")}
-        {tab("approvals", "Approvals queue", "#/approvals")}
-        {tab("flags", "Feature flags", "#/flags")}
+        {WEB_APPS.map((app) => tab(route.name === "app" && route.app === app.name, app.tab.label, app.tab.hash))}
+        {tab(route.name === "approvals" || route.name === "request", "Approvals queue", APPROVALS_HREF)}
       </nav>
       <main>
         {!actor ? (
           <p className="empty">{busy ? "Checking session…" : "Select a demo identity above to load data."}</p>
-        ) : route.name === "payments" ? (
-          <PaymentsView actor={actor} onNavigate={navigate} />
-        ) : route.name === "approvals" ? (
-          <ApprovalsQueue actor={actor} onNavigate={navigate} />
-        ) : route.name === "flags" ? (
-          <FlagsView actor={actor} onNavigate={navigate} />
         ) : (
-          <RequestDetail actor={actor} requestId={route.id} onNavigate={navigate} />
+          <RouteView actor={actor} route={route} onNavigate={navigate} />
         )}
       </main>
     </div>
   );
+}
+
+function RouteView({ actor, route, onNavigate }: { actor: Actor; route: Route; onNavigate: (hash: string) => void }) {
+  if (route.name === "approvals") return <ApprovalsQueue actor={actor} onNavigate={onNavigate} />;
+  if (route.name === "request") return <RequestDetail actor={actor} requestId={route.id} onNavigate={onNavigate} />;
+  const app = WEB_APPS.find((a) => a.name === route.app);
+  if (!app) return <p className="empty">Unknown app.</p>;
+  return <app.View actor={actor} onNavigate={onNavigate} />;
 }

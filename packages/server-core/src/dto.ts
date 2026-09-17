@@ -4,18 +4,15 @@ import {
   DEMO_USERS,
   DecisionState,
   ExecutionState,
-  PaymentDto as PaymentDtoSchema,
   RequestKind,
   RequestPayload,
-  maskEmail,
   type ApprovalRequestDto,
   type AuditEventDto,
-  type PaymentDto,
 } from "@tools/contracts";
-import type { ApprovalRequestRow, AuditEventRow, ExecutionJobRow, PaymentRow } from "./db.js";
+import type { ApprovalRequestRow, AuditEventRow, ExecutionJobRow } from "./db.js";
 import { buildSummary } from "./audit.js";
 
-function iso(d: Date | string | null): string | null {
+export function iso(d: Date | string | null): string | null {
   if (d === null) return null;
   return typeof d === "string" ? new Date(d).toISOString() : d.toISOString();
 }
@@ -25,11 +22,17 @@ export function displayNameFor(actorId: string): string {
   return user?.displayName ?? actorId;
 }
 
+type Summarizer<K extends RequestPayload["kind"]> = (payload: Extract<RequestPayload, { kind: K }>) => string;
+const summarizers = new Map<string, (payload: RequestPayload) => string>();
+
+/** Apps register how their request kind is described in DTOs. Summaries must be PII-free (use `buildSummary`). */
+export function registerRequestSummary<K extends RequestPayload["kind"]>(kind: K, fn: Summarizer<K>): void {
+  summarizers.set(kind, fn as (payload: RequestPayload) => string);
+}
+
 export function requestSummary(payload: RequestPayload): string {
-  if (payload.kind === "refund") {
-    return buildSummary({ kind: "refund", customerRef: payload.customerRef, amountMinor: payload.amountMinor, currency: payload.currency });
-  }
-  return buildSummary({ kind: "flag_change", reason: `${payload.flagKey}->${payload.newValue}` });
+  const fn = summarizers.get(payload.kind);
+  return fn ? fn(payload) : buildSummary({ kind: payload.kind });
 }
 
 export function toExecutionState(job: Pick<ExecutionJobRow, "state"> | null | undefined): ApprovalRequestDto["execution"] {
@@ -58,17 +61,6 @@ export function toApprovalRequestDto(
     createdAt: iso(row.created_at) ?? new Date().toISOString(),
   };
   return ApprovalRequestDtoSchema.parse(dto);
-}
-
-export function toPaymentDto(row: PaymentRow, refundRequestId: string | null): PaymentDto {
-  return PaymentDtoSchema.parse({
-    id: row.id,
-    amountMinor: row.amount_minor,
-    currency: row.currency,
-    customerEmailMasked: maskEmail(row.customer_email),
-    capturedAt: iso(row.captured_at),
-    refundRequestId,
-  });
 }
 
 export function toAuditEventDto(row: AuditEventRow): AuditEventDto {

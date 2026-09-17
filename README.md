@@ -25,7 +25,7 @@ Real SSO, real payment provider, deployment pipeline, DLP, retention and SIEM, d
 1. **Next app of the same shape** (approval workflow): one playbook run (`docs/prompts/03-new-app-playbook.md`), one human code-owner review. Measured once at 6 Devin minutes; treat as n=1 until the pilot repeats it.
 2. **Harden for production** (weeks 1 to 2 of the pilot): OIDC identity, INSERT-only audit role, denied-access logging, staging deployment, secrets in a vault. Assumed 200 engineer hours; see `docs/ECONOMICS.md`.
 3. **New shapes** (case queues like KYC): add a case aggregate to the platform first, then stamp apps on it. This is platform work by the two engineers who own `packages/`, not a playbook run.
-4. **Remove the last friction**: registering an app still edits three protected wiring files; a plugin manifest makes a new app a pure `apps/<name>` change.
+4. **Register, don't wire**: a new app is a folder under `apps/<name>` plus one line in `packages/app-manifest` (server) and `web/src/apps/index.ts` (web). The API, worker, and seed compose from the manifest and are not edited per app.
 
 Rule that does not change: the authorization, audit, and approval layer is specified and reviewed by humans. Devin writes it and stamps apps on top of it; it never owns it.
 

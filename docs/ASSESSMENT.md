@@ -29,7 +29,7 @@ Not for the form builder. They buy a managed application runtime, a licensed and
 | Denied-decision audit rows | small; found by review, left as a documented gap | 1 to 2 hours |
 | Environment pipeline (dev/staging/prod) | out of the 2-hour box | 1 to 2 weeks |
 | Real PSP adapter + reconciliation | needs sandbox credentials and a reconciliation design | 1 to 2 weeks |
-| App plugin manifest (no `services/api` edits per app) | found by the flags run | 0.5 day |
+| App plugin manifest (no `services/api` edits per app) | found by the flags run; built in the structure pass (`packages/app-manifest`) | done |
 
 ## 4. Not replicable, or Devin should not try
 

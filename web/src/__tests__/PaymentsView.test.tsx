@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { DEMO_USERS, SEED_PAYMENTS, maskEmail } from "@tools/contracts";
-import { PaymentsView } from "../components/PaymentsView";
+import { PaymentsView } from "../apps/refunds/PaymentsView";
 import { apiError, json, mockFetch } from "./helpers";
 
 afterEach(cleanup);

@@ -2,7 +2,6 @@ packages:
   - packages/*
   - services/*
   - apps/*/server
-  - apps/*/web
   - web
   - tests/*
 

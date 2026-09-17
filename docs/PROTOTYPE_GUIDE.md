@@ -20,8 +20,8 @@ It is not a Power Apps clone. It is one real workflow (refunds) built end to end
 
 | App | Path | Session | Spec | Permissions | PII | Maker-checker action | Gates |
 |---|---|---|---|---|---|---|---|
-| Refunds | `apps/refunds/server`, `web/` | [backend](https://app.devin.ai/sessions/52f726f5f0cb4095b67f6857c4d71c06), [UI](https://app.devin.ai/sessions/58c51219b16f4019a3f54ae490e03abe) | prompts 01, 02 | `refunds.request`, `refunds.review` | customer email, masked | approve → execution job → simulator | G1-G8 (16) |
-| Feature flags | `apps/flags/server`, `web/src/components/FlagsView.tsx` | [flags](https://app.devin.ai/sessions/1aa75ba3cb0947edb86cba96cb240258) | prompt 03 (playbook) | `flags.propose`, `flags.review` | none by design | approve → publish with version check | F1-F3 (8) |
+| Refunds | `apps/refunds/server`, `web/src/apps/refunds` | [backend](https://app.devin.ai/sessions/52f726f5f0cb4095b67f6857c4d71c06), [UI](https://app.devin.ai/sessions/58c51219b16f4019a3f54ae490e03abe) | prompts 01, 02 | `refunds.request`, `refunds.review` | customer email, masked | approve → execution job → simulator | G1-G8 (16) |
+| Feature flags | `apps/flags/server`, `web/src/apps/flags` | [flags](https://app.devin.ai/sessions/1aa75ba3cb0947edb86cba96cb240258) | prompt 03 (playbook) | `flags.propose`, `flags.review` | none by design | approve → publish with version check | F1-F3 (8) |
 | KYC queue | not built | none | `docs/KYC_SCOPE.md` | | | | |
 
 ## Foundation
@@ -83,7 +83,7 @@ Real SSO, real PSP and reconciliation, partial refunds, multi-currency, denied-d
 
 ## Governance
 
-Devin builds inside `apps/<name>` and `web/`. `packages/`, `services/`, `db/`, `tests/contracts/`, `.github/` and the lockfile require a human code-owner review (`.github/CODEOWNERS`). This is convention until branch protection is enabled in GitHub settings. The flags session legitimately edited three protected wiring files (`docs/BUILD_LEDGER.md`); with protection on, that is one human approval per new app.
+Devin builds inside `apps/<name>` and `web/`. `packages/`, `services/`, `db/`, `tests/contracts/`, `.github/` and the lockfile require a human code-owner review (`.github/CODEOWNERS`). This is convention until branch protection is enabled in GitHub settings. The flags session legitimately edited three protected wiring files (`docs/BUILD_LEDGER.md`); with protection on, that is one human approval per new app. The structure pass replaced that wiring with `packages/app-manifest`: a new app now adds one line there (server) and one in `web/src/apps/index.ts` (web), and `services/api` and `services/worker` are not edited.
 
 ## Devin evidence
 

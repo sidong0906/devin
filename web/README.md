@@ -1,9 +1,27 @@
-# @tools/web — refunds operations UI
+# @tools/web — internal-tools shell
 
-React + Vite shell for the governed refunds workflow. Screens: identity bar (demo auth selector +
-permission chips), payments / request refund, approvals queue, request detail (decision, execution,
-audit timeline). Every API response is parsed with the zod schemas from `@tools/contracts`; a
-response that does not match the frozen contract is surfaced as an error, never rendered.
+React + Vite shell that hosts every internal tool behind one identity bar and one approvals queue.
+Every API response is parsed with the zod schemas from `@tools/contracts`; a response that does not
+match the frozen contract is surfaced as an error, never rendered.
+
+## Layout
+
+```text
+src/
+  platform/     shell screens shared by all tools: IdentityBar, ApprovalsQueue, RequestDetail, AuditTimeline
+  components/   reusable primitives (Badges, ErrorBox); the seed of the design system
+  apps/
+    index.ts    web-side app manifest (WEB_APPS); mirrors packages/app-manifest on the server
+    types.ts    WebApp: tab, main View, PayloadFields for the request detail, reviewPermission
+    refunds/    PaymentsView + RefundPayloadFields
+    flags/      FlagsView + FlagChangePayloadFields
+  api/          typed client (client.ts) and the in-memory fixture API (fixtures.ts)
+  routes.ts     hash router; app tabs come from WEB_APPS, approvals routes are fixed
+```
+
+A new tool adds a folder under `src/apps/<name>/` exporting a `WebApp` and one line in `src/apps/index.ts`.
+Nothing under `platform/` needs to change: the queue renders any `RequestKind`, and the detail page
+uses the app's `PayloadFields` (or a generic JSON fallback).
 
 ## Run against the live API (default)
 

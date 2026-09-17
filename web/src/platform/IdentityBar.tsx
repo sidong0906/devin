@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { DEMO_USERS, DemoUserKey } from "@tools/contracts";
 import type { Actor } from "@tools/contracts";
-import { PermissionChip } from "./Badges";
-import { ErrorBox } from "./ErrorBox";
+import { PermissionChip } from "../components/Badges";
+import { ErrorBox } from "../components/ErrorBox";
 import { USE_FIXTURES } from "../api/client";
 
 type Props = {

@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Actor, FlagDto } from "@tools/contracts";
-import { ApiClientError, api } from "../api/client";
-import { formatDate } from "../format";
-import { ErrorBox } from "./ErrorBox";
-import { requestHref } from "../routes";
+import { ApiClientError, api } from "../../api/client";
+import { formatDate } from "../../format";
+import { ErrorBox } from "../../components/ErrorBox";
+import { requestHref } from "../../hrefs";
 
 type Props = { actor: Actor; onNavigate: (hash: string) => void };
 

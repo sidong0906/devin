@@ -17,6 +17,11 @@ export class AppError extends Error {
   }
 }
 
+/** PostgreSQL unique_violation; apps map it to DUPLICATE_REQUEST. */
+export function isUniqueViolation(err: unknown): boolean {
+  return typeof err === "object" && err !== null && (err as { code?: string }).code === "23505";
+}
+
 export function sendError(reply: FastifyReply, request: FastifyRequest, status: number, code: string, message: string) {
   return reply.status(status).send({ code, message, requestId: request.id });
 }

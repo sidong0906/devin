@@ -10,15 +10,17 @@ This is the reusable prompt for "the next app". Fill the `<<PARAMS>>` block, han
 - Acceptance gate (already written, must pass): `tests/contracts/src/flags.acceptance.test.ts`. Read it first; it is the spec.
 
 ## Owned paths for this session
-`apps/flags/**` (new), `db/migrations/0002_*.sql` (new), `web/src/**` (add a Flags screen; keep existing screens working), plus **exactly these wiring edits** outside app folders:
-- `services/api/src/app.ts`: import and call `registerFlags()` / `registerFlagRoutes(app, db)` next to the refunds registration.
-- `services/api/src/seed.ts`: upsert `SEED_FLAGS` (version 0) idempotently.
-- `services/api/src/app.ts` demo reset: also reset `feature_flags` to seed values (version 0, no pending).
-- `services/api/package.json`: add the workspace dep `"@tools/flags-server": "workspace:*"`.
-Do NOT touch `packages/**`, `tests/**`, `.github/**`, `db/init/**`, root manifests, or the lockfile except as the workspace dep above requires (`pnpm install` will update `pnpm-lock.yaml`; that is expected and allowed). If the shared platform (`packages/server-core`) is missing something you need, STOP and report it — do not patch it. That finding is a first-class result of this experiment.
+`apps/flags/**` (new), `db/migrations/0002_*.sql` (new), `web/src/apps/flags/**` (new Flags screen; keep existing screens working), plus **exactly these registration edits** outside app folders:
+- `packages/app-manifest/package.json`: add the workspace dep `"@tools/flags-server": "workspace:*"`.
+- `packages/app-manifest/src/index.ts`: add `flagsApp` to `APPS`.
+- `web/src/apps/index.ts`: add `flagsWebApp` to `WEB_APPS`.
+Your `apps/flags/server/src/index.ts` exports `defineApp({ name, register, registerRoutes, seed, demoReset })`; seed and demo reset live in the app, not in `services/api`.
+Do NOT touch `packages/server-core/**`, `packages/contracts/**`, `services/**`, `tests/**`, `.github/**`, `db/init/**`, root manifests, or the lockfile except as the workspace dep above requires (`pnpm install` will update `pnpm-lock.yaml`; that is expected and allowed).
+
+(Run #1 predates the manifest and had to edit `services/api/src/app.ts` and `seed.ts` directly; that finding is recorded in the ledger and is what the manifest fixed.) If the shared platform (`packages/server-core`) is missing something you need, STOP and report it — do not patch it. That finding is a first-class result of this experiment.
 
 ## Reference implementation to copy the shape of
-`apps/refunds/server/src/index.ts` (action + review policy + routes), `db/migrations/0001_init.sql` (grants pattern), `web/src/components/PaymentsView.tsx` and `RequestDetail.tsx` (screen shape and error rendering).
+`apps/refunds/server/src/` (`actions.ts` action + review policy, `routes.ts`, `db.ts` app-owned table types, `seed.ts`, `index.ts` app module), `db/migrations/0001_init.sql` (grants pattern), `web/src/apps/refunds/` (`PaymentsView.tsx` screen shape and error rendering, `RefundPayloadFields.tsx`, `index.tsx` WebApp) and `web/src/platform/RequestDetail.tsx`.
 
 ## Build
 1. `apps/flags/server` package `@tools/flags-server` (same tsconfig/package layout as `@tools/refunds-server`).

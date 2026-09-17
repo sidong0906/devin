@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import type { Actor, ApprovalRequestDto } from "@tools/contracts";
 import { api } from "../api/client";
 import { formatDate } from "../format";
-import { DecisionBadge, ExecutionBadge } from "./Badges";
-import { ErrorBox } from "./ErrorBox";
-import { requestHref } from "../routes";
+import { DecisionBadge, ExecutionBadge } from "../components/Badges";
+import { ErrorBox } from "../components/ErrorBox";
+import { requestHref } from "../hrefs";
 
 type Filter = "pending" | "decided" | "all";
 type Props = { actor: Actor; onNavigate: (hash: string) => void };

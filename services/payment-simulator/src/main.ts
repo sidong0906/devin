@@ -1,4 +1,3 @@
-// OWNED BY: backend session. Entry point for @tools/payment-simulator.
 import { buildSimulator } from "./app.js";
 
 const app = buildSimulator();
